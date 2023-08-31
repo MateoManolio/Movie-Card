@@ -63,7 +63,7 @@ class SearchMovieDelegate extends SearchDelegate {
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
-      Text("data"),
+      const Text("data2"),
     ];
   }
 

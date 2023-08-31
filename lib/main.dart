@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_card/pages/movie_details.dart';
+import 'package:movie_card/pages/movie_menu.dart';
 import 'package:movie_card/shared/movie.dart';
 
 void main() {
@@ -25,10 +26,9 @@ class MyApp extends StatelessWidget {
         MovieDetails.routeName: (context) => MovieDetails(
               movie: Movie.mockMovie(),
             ),
+        MovieMenu.routeName: (context) => const MovieMenu(),
       },
-      home: MovieDetails(
-        movie: Movie.mockMovie(),
-      ),
+      home: const MovieMenu(),
     );
   }
 }

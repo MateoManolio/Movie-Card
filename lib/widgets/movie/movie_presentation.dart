@@ -28,7 +28,7 @@ class MoviePresentation extends StatelessWidget {
             child: Hero(
               tag: 'backdrop',
               child: Image(
-                image: AssetImage(movie.assetsBackdropPath),
+                image: NetworkImage(movie.assetsBackdropPath),
                 colorBlendMode: BlendMode.srcATop,
                 alignment: Alignment.center,
                 fit: BoxFit.cover,

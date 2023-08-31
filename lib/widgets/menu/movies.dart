@@ -8,12 +8,12 @@ import 'package:movie_card/widgets/menu/movie_details.dart';
 class Movies extends StatelessWidget {
   Movies({
     super.key,
-    required this.movie,
+    required this.movies,
     required this.filter,
   });
 
   bool filter;
-  final Movie movie;
+  final List<Movie> movies;
 
   static const String title = "Movies";
 
@@ -36,28 +36,32 @@ class Movies extends StatelessWidget {
             style: superTitleStyle,
           ),
         ),
-        GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              MovieDetails.routeName,
-              arguments: movie,
-            );
-          },
-          child: CustomCard(
-            padding: posterPadding,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * width,
-              height: MediaQuery.of(context).size.width * height,
-              child: MenuMovieDetails(
-                movie: movie,
-                posterWidth: MediaQuery.of(context).size.width *
-                    height *
-                    posterWidth,
-              ),
-            ),
-          ),
-        )
+        ListView.builder(
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    MovieDetails.routeName,
+                    arguments: movies[index],
+                  );
+                },
+                child: CustomCard(
+                  padding: posterPadding,
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * width,
+                    height: MediaQuery.of(context).size.width * height,
+                    child: MenuMovieDetails(
+                      movie: movies[index],
+                      posterWidth: MediaQuery.of(context).size.width *
+                          height *
+                          posterWidth,
+                    ),
+                  ),
+                ),
+              );
+            }),
       ],
     );
   }

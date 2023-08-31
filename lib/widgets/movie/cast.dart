@@ -12,7 +12,7 @@ class Cast extends StatelessWidget {
 
   static const double padCast = 10.0;
   static const double castWidth = 150.0;
-  static const double castHeight = 200.0;
+  static const double castHeight = 230.0;
   static const double borderRadius = 10.0;
 
   @override

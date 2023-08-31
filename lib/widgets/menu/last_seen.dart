@@ -27,7 +27,7 @@ class LastSeen extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: (){
+          onTap: () {
             Navigator.pushNamed(
               context,
               MovieDetails.routeName,
@@ -35,12 +35,12 @@ class LastSeen extends StatelessWidget {
             );
           },
           child: Stack(children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(borderRadius),
-              child: Hero(
-                tag: 'backdrop',
-                child: Image(
-                  image: AssetImage('assets/${movie.backdropName}.jpg'),
+            Hero(
+              tag: 'backdrop',
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(borderRadius),
+                child: Image.network(
+                  movie.assetsBackdropPath,
                 ),
               ),
             ),

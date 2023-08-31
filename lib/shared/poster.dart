@@ -16,6 +16,7 @@ class Poster extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(posterName);
     return Padding(
       padding: EdgeInsets.only(
         left: pad1,
@@ -31,7 +32,7 @@ class Poster extends StatelessWidget {
             ),
           ),
           child: Image(
-            image: AssetImage(posterName),
+            image: NetworkImage(posterName),
             fit: BoxFit.cover,
           ),
         ),
