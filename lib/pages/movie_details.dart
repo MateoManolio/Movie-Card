@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../shared/movie.dart';
+import '../shared/ui_consts.dart';
 import '../widgets/movie/movie_presentation.dart';
 import '../widgets/movie/overview.dart';
 import '../widgets/movie/movie_details_custom_nav_bar.dart';
@@ -24,7 +25,7 @@ class _MovieDetailsState extends State<MovieDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+      backgroundColor: colors.onPrimaryContainer,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +36,9 @@ class _MovieDetailsState extends State<MovieDetails> {
             Overview(
               overview: widget.movie.overview,
             ),
-            Cast(castImages: widget.movie.assetsCastPath),
+            Cast(
+              castImages: widget.movie.assetsCastPath,
+            ),
             const SizedBox(
               height: endPadding,
             ),

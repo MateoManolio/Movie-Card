@@ -3,22 +3,22 @@ import 'package:flutter/material.dart';
 class Poster extends StatelessWidget {
   const Poster({
     super.key,
-    required this.pad1,
+    required this.posterPadding,
     required this.posterName,
     required this.posterWidth,
   });
 
   final String posterName;
-  final double pad1;
+  final double posterPadding;
   final double posterWidth;
 
-  static const double borderRadiusCard = 20.0;
+  static const double borderRadiusCard = 15.0;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        left: pad1,
+        left: posterPadding,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadiusCard),
@@ -31,7 +31,7 @@ class Poster extends StatelessWidget {
             ),
           ),
           child: Image(
-            image: AssetImage(posterName),
+            image: NetworkImage(posterName),
             fit: BoxFit.cover,
           ),
         ),

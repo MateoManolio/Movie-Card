@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../pages/home_page.dart';
 import '../../shared/movie.dart';
 import '../../shared/poster.dart';
 import '../../shared/ui_consts.dart';
@@ -26,21 +27,33 @@ class MoviePresentation extends StatelessWidget {
         children: [
           Positioned(
             child: Hero(
-              tag: 'backdrop',
+              tag: movie.backdropName,
               child: Image(
-                image: AssetImage(movie.assetsBackdropPath),
+                image: NetworkImage(
+                  movie.assetsBackdropPath,
+                ),
                 colorBlendMode: BlendMode.srcATop,
                 alignment: Alignment.center,
                 fit: BoxFit.cover,
+                filterQuality: FilterQuality.high,
               ),
             ),
           ),
           Positioned(
             child: SafeArea(
               child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                icon: const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                ),
                 onPressed: () {
-                  Navigator.maybePop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(
+                        lastMovie: movie,
+                      ),
+                    ),
+                  );
                 },
                 color: colors.background,
               ),
@@ -52,15 +65,15 @@ class MoviePresentation extends StatelessWidget {
             child: Row(
               children: [
                 Hero(
-                  tag: 'movie',
+                  tag: movie.posterName,
                   child: Poster(
-                    pad1: pad1,
+                    posterPadding: pad1,
                     posterName: movie.assetsPosterPath,
                     posterWidth: posterWidth,
                   ),
                 ),
                 MovieInfo(
-                  pad1: pad1,
+                  padGenresCard: pad1,
                   movie: movie,
                 ),
               ],

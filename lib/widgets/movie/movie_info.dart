@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import '../../provider/my_local_repository.dart';
 import '../../shared/circular_percent_indicator.dart';
 import '../../shared/custom_card.dart';
+import '../../shared/error_class.dart';
 import '../../shared/movie.dart';
 
-class MovieInfo extends StatelessWidget {
+class MovieInfo extends StatefulWidget {
   const MovieInfo({
     super.key,
-    required this.pad1,
+    required this.padGenresCard,
     required this.movie,
   });
 
-  final double pad1;
+  final double padGenresCard;
   final Movie movie;
 
   static const double opacity_1 = 0.75;
@@ -26,47 +28,89 @@ class MovieInfo extends StatelessWidget {
   static const double separation = 10;
 
   @override
+  State<MovieInfo> createState() => _MovieInfoState();
+}
+
+class _MovieInfoState extends State<MovieInfo> {
+  late final Future<List<String>> _movieGenres;
+  MyLocalRepository repository = MyLocalRepository();
+
+  @override
+  void initState() {
+    _movieGenres = repository.getGenresById(widget.movie.genres);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.all(padCard),
+        padding: const EdgeInsets.all(MovieInfo.padCard),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CustomCard(
-              padding: padTitle,
+              padding: MovieInfo.padTitle,
               child: ListTile(
-                title: Text(movie.title),
-                subtitle: Text(movie.releaseDate),
+                title: Text(
+                  widget.movie.title,
+                ),
+                subtitle: Text(
+                  widget.movie.releaseDate,
+                ),
                 textColor: Theme.of(context).colorScheme.background,
               ),
             ),
             const SizedBox(
-              height: separation,
+              height: MovieInfo.separation,
             ),
             CustomCard(
-              padding: padGenres,
+              padding: MovieInfo.padGenres,
               child: Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(padCard),
+                    padding: const EdgeInsets.all(MovieInfo.padCard),
                     child: Padding(
-                      padding: EdgeInsets.all(pad1),
+                      padding: EdgeInsets.all(widget.padGenresCard),
                       child: CircularPercentIndicator(
-                        percentIndicator: movie.score,
-                        radiusPercentIndicator: radiusPercentIndicator,
+                        percentIndicator: widget.movie.score,
+                        radiusPercentIndicator:
+                            MovieInfo.radiusPercentIndicator,
                       ),
                     ),
                   ),
                   Center(
                     child: SizedBox(
-                      width: textGenderWidth,
-                      child: Text(
-                        movie.genres,
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.background),
-                        overflow: TextOverflow.visible,
+                      width: MovieInfo.textGenderWidth,
+                      child: FutureBuilder(
+                        future: _movieGenres,
+                        builder: (
+                          BuildContext context,
+                          AsyncSnapshot<dynamic> snapshot,
+                        ) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            if (snapshot.hasError) {
+                              return const CustomError(
+                                message: "Genres Missing",
+                              );
+                            } else {
+                              return Text(
+                                snapshot.data.join(", "),
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background),
+                                overflow: TextOverflow.visible,
+                              );
+                            }
+                          } else {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
                       ),
                     ),
                   )

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_card/pages/home_page.dart';
 import 'pages/movie_details.dart';
 import 'shared/movie.dart';
 
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Movie Cards',
       initialRoute: routeName,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -25,10 +26,11 @@ class MyApp extends StatelessWidget {
         MovieDetails.routeName: (context) => MovieDetails(
               movie: Movie.mockMovie(),
             ),
+        HomePage.routeName: (context) => HomePage(
+              lastMovie: Movie.mockMovie(),
+            ),
       },
-      home: MovieDetails(
-        movie: Movie.mockMovie(),
-      ),
+      home: HomePage(lastMovie: Movie.mockMovie()),
     );
   }
 }
