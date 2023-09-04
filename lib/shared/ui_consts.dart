@@ -39,3 +39,6 @@ const double boxShadowOpacity = 0.5;
 const double boxBlurRadius = 30.0;
 const double boxOffsetX = 0.0;
 const double boxOffsetY = 10.0;
+
+// API
+const imageUri = 'https://image.tmdb.org/t/p/w500';

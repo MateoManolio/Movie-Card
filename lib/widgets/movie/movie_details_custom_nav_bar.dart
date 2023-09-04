@@ -16,8 +16,6 @@ class CustomNavigationBar extends StatefulWidget {
 
 class _CustomNavigationBarState extends State<CustomNavigationBar>
     with TickerProviderStateMixin {
-  var liked = false;
-  var saved = false;
   var likes = 0;
   late final AnimationController _likeController;
   late final AnimationController _saveController;
@@ -70,26 +68,26 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         children: [
           GestureDetector(
             onTap: () {
-              if (liked) {
+              if (widget.movie.liked) {
                 _likeController.reverse();
-                likes++;
               } else {
                 _likeController.forward();
+                likes++;
               }
               setState(() {
-                liked = !liked;
+                widget.movie.toggleLiked();
               });
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               mainAxisSize: MainAxisSize.max,
               children: [
-                liked
-                    ? const Icon(Icons.favorite_border)
-                    : const Icon(
+                widget.movie.liked
+                    ? const Icon(
                         Icons.favorite,
                         color: Colors.redAccent,
-                      ),
+                      )
+                    : const Icon(Icons.favorite_border),
                 Text(
                   likes.toString(),
                   style: const TextStyle(color: Colors.grey),
@@ -99,23 +97,24 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           ),
           GestureDetector(
             onTap: () {
-              if (saved) {
+              if (widget.movie.saved) {
                 _saveController.reverse();
               } else {
                 _saveController.forward();
               }
-              setState(() {
-                saved = !saved;
-                widget.movie.toggleSaved();
-              });
+              setState(
+                () {
+                  widget.movie.toggleSaved();
+                },
+              );
             },
-            child: saved
+            child: widget.movie.saved
                 ? const Icon(
-                    Icons.bookmark_border,
-                  )
-                : const Icon(
                     Icons.bookmark,
                     color: Colors.blue,
+                  )
+                : const Icon(
+                    Icons.bookmark_border,
                   ),
           ),
         ],
