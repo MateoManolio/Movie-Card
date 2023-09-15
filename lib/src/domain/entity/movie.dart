@@ -13,7 +13,6 @@ class Movie {
     required this.overview,
     this.saved = false,
     this.liked = false,
-    required this.cast,
   });
 
   final int id;
@@ -24,7 +23,6 @@ class Movie {
   final List<int> genres;
   final String overview;
   final double score;
-  final List<Cast> cast;
   bool saved;
   bool liked;
 
@@ -37,9 +35,5 @@ class Movie {
   String get assetsPosterPath => imageUri + posterName;
 
   bool get getSaved => saved;
-
-  List<String> get assetsCastPath {
-    return cast.map((Cast castMember) => imageUri + castMember.profilePath).toList();
-  }
 
 }

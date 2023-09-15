@@ -1,26 +1,38 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
+import '../../../config/route/app_routes.dart';
 import '../../../core/util/ui_consts.dart';
 import '../../../domain/entity/movie.dart';
-import '../../pages/movie_details.dart';
+import '../../bloc/movie_bloc.dart';
+import '../../navigation/movie_details_args.dart';
+import '../loaders/last_seen_loader.dart';
+import '../shared/error_class.dart';
+import '../shared/text_over_things.dart';
 
 class LastSeen extends StatelessWidget {
   const LastSeen({
-    super.key,
     required this.movie,
+    required this.movieBloc,
+    super.key,
   });
 
+  final MovieBloc movieBloc;
   final Movie movie;
 
   static const String title = "Last seen";
-  static const double borderRadius = 20;
-  static const double sidePadding = 15;
+  static const double borderRadius = 9;
+  static const double sidePadding = 10;
+  static const double textSidePadding = sidePadding + 5;
   static const double bottomPadding = 12;
   static const double titlePadding = 12;
+  static const double fontSizeTitle = 28;
+  static const double fontSizeDate = 20;
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
+      children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(titlePadding),
           child: Text(
@@ -31,44 +43,59 @@ class LastSeen extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.push(
+            Navigator.pushNamed(
               context,
-              MaterialPageRoute(
-                builder: (context) => MovieDetails(movie: movie),
+              Routes.movieDetailsRouteName,
+              arguments: MovieDetailsArguments(
+                movie: movie,
+                bloc: movieBloc,
               ),
             );
           },
           child: Stack(
-            children: [
+            children: <Widget>[
               Hero(
                 tag: movie.backdropName,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(borderRadius),
-                  child: Image.network(
-                    movie.assetsBackdropPath,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: sidePadding),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(borderRadius),
+                    child: CachedNetworkImage(
+                      imageUrl: movie.assetsBackdropPath,
+                      placeholder: (
+                        BuildContext context,
+                        String url,
+                      ) =>
+                          LastSeenLoader(),
+                      errorWidget: (
+                        BuildContext context,
+                        String url,
+                        Object error,
+                      ) =>
+                          CustomError(message: error.toString()),
+                    ),
                   ),
                 ),
               ),
               Positioned(
                 bottom: bottomPadding,
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: sidePadding,
-                    right: sidePadding,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: textSidePadding,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        movie.title,
-                        style: titleStyle,
+                    children: <Widget>[
+                      TextOverThings(
+                        title: movie.title,
+                        fontSize: fontSizeTitle,
                       ),
                       const SizedBox(
                         width: sidePadding,
                       ),
-                      Text(
-                        movie.releaseDate,
-                        style: subtitleStyle,
+                      TextOverThings(
+                        title: movie.releaseDate,
+                        fontSize: fontSizeDate,
                       ),
                     ],
                   ),

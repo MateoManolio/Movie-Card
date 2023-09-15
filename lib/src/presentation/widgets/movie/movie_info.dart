@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
-import '../../../data/repository/my_local_repository.dart';
+import '../../../core/util/enums.dart';
+import '../../../domain/entity/event.dart';
+import '../../bloc/genres_bloc.dart';
+import '../../../domain/entity/genre.dart';
 import '../../../domain/entity/movie.dart';
+import '../loaders/default_loader.dart';
 import '../shared/circular_percent_indicator.dart';
 import '../shared/custom_card.dart';
 import '../shared/error_class.dart';
 
 class MovieInfo extends StatefulWidget {
   const MovieInfo({
-    super.key,
     required this.padGenresCard,
     required this.movie,
+    super.key,
   });
 
   final double padGenresCard;
@@ -33,12 +37,11 @@ class MovieInfo extends StatefulWidget {
 }
 
 class _MovieInfoState extends State<MovieInfo> {
-  late final Future<List<String>> _movieGenres;
-  MyLocalRepository repository = MyLocalRepository();
+  final GenresBloc _genreBloc = GenresBloc();
 
   @override
   void initState() {
-    _movieGenres = repository.getGenresById(widget.movie.genres);
+    _genreBloc.fetchGenres(widget.movie.genres);
     super.initState();
   }
 
@@ -48,9 +51,8 @@ class _MovieInfoState extends State<MovieInfo> {
       child: Padding(
         padding: const EdgeInsets.all(MovieInfo.padCard),
         child: Column(
-          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+          children: <Widget>[
             CustomCard(
               padding: MovieInfo.padTitle,
               child: ListTile(
@@ -69,7 +71,7 @@ class _MovieInfoState extends State<MovieInfo> {
             CustomCard(
               padding: MovieInfo.padGenres,
               child: Row(
-                children: [
+                children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(MovieInfo.padCard),
                     child: Padding(
@@ -84,37 +86,38 @@ class _MovieInfoState extends State<MovieInfo> {
                   Center(
                     child: SizedBox(
                       width: MovieInfo.textGenderWidth,
-                      child: FutureBuilder(
-                        future: _movieGenres,
+                      child: StreamBuilder<Event<List<Genre>>>(
+                        stream: _genreBloc.stream,
                         builder: (
                           BuildContext context,
-                          AsyncSnapshot<dynamic> snapshot,
+                          AsyncSnapshot<Event<List<Genre>>> snapshot,
                         ) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            if (snapshot.hasError) {
-                              return const CustomError(
-                                message: "Genres Missing",
-                              );
-                            } else {
+                          switch (snapshot.data?.state) {
+                            case null:
+                            case Status.loading:
+                              return DefaultLoader();
+                            case Status.empty:
+                            case Status.success:
                               return Text(
-                                snapshot.data.join(", "),
+                                snapshot.data!.data!
+                                    .map((Genre genre) => genre.name)
+                                    .join(", "),
                                 style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .background),
+                                  color:
+                                      Theme.of(context).colorScheme.background,
+                                ),
                                 overflow: TextOverflow.visible,
                               );
-                            }
-                          } else {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
+                            case Status.error:
+                              const CustomError(
+                                message: "Genres Missing: Server Error",
+                              );
                           }
+                          return DefaultLoader();
                         },
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

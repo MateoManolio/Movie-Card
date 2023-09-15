@@ -5,9 +5,9 @@ import '../../../core/util/ui_consts.dart';
 
 class CircularPercentIndicator extends StatelessWidget {
   const CircularPercentIndicator({
-    super.key,
     required this.percentIndicator,
     required this.radiusPercentIndicator,
+    super.key,
   });
 
   final double percentIndicator;

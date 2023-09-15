@@ -6,8 +6,8 @@ import '../../../core/util/ui_consts.dart';
 class ExitAlert extends StatelessWidget {
   const ExitAlert({super.key});
 
-  static const alertTitle = 'Exit';
-  static const exitAppText = 'Are you sure you want to exit?';
+  static const String alertTitle = 'Exit';
+  static const String exitAppText = 'Are you sure you want to exit?';
   static const double borderRadius = 12.0;
 
   static const double titleSize = 32;

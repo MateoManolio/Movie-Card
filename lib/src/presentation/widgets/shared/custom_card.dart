@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class CustomCard extends StatelessWidget {
   const CustomCard({
-    super.key,
     required this.child,
     required this.padding,
+    super.key,
   });
 
   final Widget child;
@@ -13,9 +13,9 @@ class CustomCard extends StatelessWidget {
 
   static const double borderRadius = 12.0;
   static const double blur = 5.0;
-  static const borderOpacity = 0.5;
-  static const borderWidth = 1.2;
-  static const opacity = 0.15;
+  static const double borderOpacity = 0.5;
+  static const double borderWidth = 1.2;
+  static const double opacity = 0.15;
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +29,9 @@ class CustomCard extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             border: Border.all(
-                color: Colors.white.withOpacity(borderOpacity),
-                width: borderWidth,
-                style: BorderStyle.solid),
+              color: Colors.white.withOpacity(borderOpacity),
+              width: borderWidth,
+            ),
             borderRadius: BorderRadius.circular(borderRadius),
             color: Colors.white.withOpacity(opacity),
           ),

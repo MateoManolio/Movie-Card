@@ -7,15 +7,13 @@ class NavbarIcon extends StatefulWidget {
   final int pageIndex;
 
   final int currentIndex;
-  final PageController pageController;
 
   const NavbarIcon({
-    super.key,
     required this.icon,
     required this.pageIndex,
     required this.currentIndex,
-    required this.pageController,
     required this.onIconTap,
+    super.key,
   });
 
   final Function(int) onIconTap;
@@ -25,24 +23,14 @@ class NavbarIcon extends StatefulWidget {
 }
 
 class _NavbarIconState extends State<NavbarIcon> {
-  static const opacity = 0.5;
-  static const animationDuration = 500;
+  static const double opacity = 0.5;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {
-        setState(
-          () {
-            widget.onIconTap.call(widget.pageIndex);
-            widget.pageController.animateToPage(
-              widget.pageIndex,
-              duration: const Duration(milliseconds: animationDuration),
-              curve: Curves.fastLinearToSlowEaseIn,
-            );
-          },
-        );
-      },
+      onPressed: () => setState(
+        () => widget.onIconTap.call(widget.pageIndex),
+      ),
       icon: Icon(
         widget.icon,
         color: colors.background

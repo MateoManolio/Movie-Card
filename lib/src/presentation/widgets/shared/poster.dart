@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'cache_image.dart';
 
 class Poster extends StatelessWidget {
   const Poster({
-    super.key,
     required this.posterPadding,
     required this.posterName,
     required this.posterWidth,
+    super.key,
   });
 
   final String posterName;
@@ -30,10 +31,7 @@ class Poster extends StatelessWidget {
               width: 3.0,
             ),
           ),
-          child: Image(
-            image: NetworkImage(posterName),
-            fit: BoxFit.cover,
-          ),
+          child: CacheImage(url: posterName),
         ),
       ),
     );
