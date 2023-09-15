@@ -3,8 +3,8 @@ import '../../../core/util/ui_consts.dart';
 
 class Overview extends StatelessWidget {
   const Overview({
-    super.key,
     required this.overview,
+    super.key,
   });
 
   final String overview;

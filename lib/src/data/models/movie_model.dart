@@ -11,11 +11,11 @@ class MovieModel extends Movie {
     required super.score,
     required super.genres,
     required super.overview,
-    required super.cast,
   });
 
   factory MovieModel.fromJson(Map<String, dynamic> json) {
-    const percent = 10;
+
+    const int percent = 10;
     return MovieModel(
       id: json['id'].toInt(),
       title: json['title'].toString(),
@@ -25,16 +25,13 @@ class MovieModel extends Movie {
       score: (json['vote_average'].toDouble() / percent),
       genres: List<int>.from(json['genre_ids']),
       overview: json['overview'].toString(),
-      cast: CastModel.fromListOfJson(
-        json['cast'],
-      ),
     );
   }
 
   static List<MovieModel> listOfMovies(List<dynamic> list) {
     List<MovieModel> movies = List.generate(
       list.length,
-      (index) => MovieModel.fromJson(list[index]),
+      (int index) => MovieModel.fromJson(list[index]),
     );
     return movies;
   }
@@ -49,34 +46,5 @@ class MovieModel extends Movie {
             "While working underground to fix a water main, Brooklyn plumbers—and brothers—Mario and Luigi are transported down a mysterious pipe and wander into a magical new world. But when the brothers are separated, Mario embarks on an epic quest to find Luigi.",
         genres: [16, 10751, 12, 14, 35],
         score: 0.78,
-        cast: CastModel.fromListOfJson(
-          [
-            {
-              "id": 73457,
-              "known_for_department": "Acting",
-              "profile_path": "/qoVESlEjMLIbdDzeXwsYrSS2jpw.jpg"
-            },
-            {
-              "id": 1397778,
-              "known_for_department": "Acting",
-              "profile_path": "/jxAbDJWvz4p1hoFpJYG5vY2dQmq.jpg"
-            },
-            {
-              "id": 95101,
-              "known_for_department": "Acting",
-              "profile_path": "/c0HNhjChGybnHa4eoLyqO4dDu1j.jpg"
-            },
-            {
-              "id": 70851,
-              "known_for_department": "Acting",
-              "profile_path": "/rtCx0fiYxJVhzXXdwZE2XRTfIKE.jpg"
-            },
-            {
-              "id": 298410,
-              "known_for_department": "Acting",
-              "profile_path": "/vAR5gVXRG2Cl6WskXT99wgkAoH8.jpg"
-            }
-          ],
-        ),
       );
 }

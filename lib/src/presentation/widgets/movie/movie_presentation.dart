@@ -1,15 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/util/ui_consts.dart';
 import '../../../domain/entity/movie.dart';
-import '../../pages/home_page.dart';
 import '../shared/poster.dart';
 import 'movie_info.dart';
 
 class MoviePresentation extends StatelessWidget {
   const MoviePresentation({
-    super.key,
     required this.movie,
+    super.key,
   });
 
   final Movie movie;
@@ -25,16 +24,15 @@ class MoviePresentation extends StatelessWidget {
       height: MediaQuery.of(context).size.height * movieCardsContainerHeight,
       child: Stack(
         clipBehavior: Clip.none,
-        children: [
+        children: <Widget>[
           Positioned(
             child: Hero(
               tag: movie.backdropName,
-              child: Image(
-                image: NetworkImage(
-                  movie.assetsBackdropPath,
-                ),
+              child: CachedNetworkImage(
+                imageUrl: movie.assetsBackdropPath,
+                placeholder: (BuildContext context, String url) => CircularProgressIndicator(),
+                errorWidget: (BuildContext context, String url, Object error) => Icon(Icons.error),
                 colorBlendMode: BlendMode.srcATop,
-                alignment: Alignment.center,
                 fit: BoxFit.cover,
                 filterQuality: FilterQuality.high,
               ),
@@ -47,13 +45,8 @@ class MoviePresentation extends StatelessWidget {
                   Icons.arrow_back_ios_new_rounded,
                 ),
                 onPressed: () {
-                  Navigator.pushReplacement(
+                  Navigator.pop(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(
-                        lastMovie: movie,
-                      ),
-                    ),
                   );
                 },
                 color: colors.background,
@@ -64,7 +57,7 @@ class MoviePresentation extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             bottom: posterPosition,
             child: Row(
-              children: [
+              children: <Widget>[
                 Hero(
                   tag: movie.posterName,
                   child: Poster(

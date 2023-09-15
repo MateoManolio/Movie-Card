@@ -1,29 +1,25 @@
 import 'package:flutter/material.dart';
 import '../../../core/util/ui_consts.dart';
+import '../../../domain/entity/cast.dart';
 import 'cast_card.dart';
 
-class Cast extends StatelessWidget {
-  const Cast({
-    super.key,
+class CastWidget extends StatelessWidget {
+  const CastWidget({
     required this.castImages,
+    super.key,
   });
 
-  final List<String> castImages;
+  final List<Cast> castImages;
 
-  static const double padCast = 10.0;
   static const double castWidth = 150.0;
   static const double castHeight = 230.0;
-  static const double borderRadius = 10.0;
   static const String title = 'Cast';
 
   @override
   Widget build(BuildContext context) {
-    if (castImages.isEmpty) {
-      return Container();
-    } else {
       return Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
+        children: <Widget>[
           ListTile(
             title: Text(
               title,
@@ -35,9 +31,7 @@ class Cast extends StatelessWidget {
             child: ListView.builder(
               shrinkWrap: true,
               itemCount: castImages.length,
-              itemBuilder: (context, index) => CastCard(
-                padCast: padCast,
-                borderRadius: borderRadius,
+              itemBuilder: (BuildContext context, int index) => CastCard(
                 castWidth: castWidth,
                 castHeight: castHeight,
                 index: index,
@@ -49,5 +43,4 @@ class Cast extends StatelessWidget {
         ],
       );
     }
-  }
 }

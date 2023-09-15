@@ -21,7 +21,7 @@ final TextStyle subtitleStyle = TextStyle(
 
 // Colors
 
-final colors = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
+final ColorScheme colors = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
 
 // PercentIndicator
 
@@ -40,5 +40,17 @@ const double boxBlurRadius = 30.0;
 const double boxOffsetX = 0.0;
 const double boxOffsetY = 10.0;
 
-// API
-const imageUri = 'https://image.tmdb.org/t/p/w500';
+// Pages
+const int homePage = 0;
+const int searchPage = 1;
+const int savePage = 2;
+const int popularPage = 3;
+const int upcomingPage = 4;
+
+// GridView
+const double gridAxisSpacing = 15;
+const double gridAspectRatio = 9 / 16;
+
+// Loaders
+const double loaderPadding = 12;
+const double loaderLinearBorderRadius = 10;

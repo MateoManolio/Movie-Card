@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:movie_card/src/presentation/navigation/movie_details_args.dart';
+import '../../../config/route/app_routes.dart';
+import '../../bloc/movie_bloc.dart';
 import '../../../core/util/ui_consts.dart';
 import '../../../domain/entity/movie.dart';
-import '../../pages/movie_details.dart';
 import '../shared/custom_card.dart';
 import 'movie_details.dart';
 
 class Movies extends StatelessWidget {
+
   const Movies({
-    super.key,
     required this.movies,
+    required this.lastMovieBloc,
+    super.key,
   });
 
+  final MovieBloc lastMovieBloc;
   final List<Movie> movies;
 
   static const String title = "Movies";
@@ -27,7 +32,7 @@ class Movies extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
+      children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(
             top: topPadding,
@@ -41,15 +46,15 @@ class Movies extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemCount: movies.length,
-          itemBuilder: (context, index) {
+          itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onTap: () {
-                Navigator.push(
+                Navigator.pushNamed(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => MovieDetails(
-                      movie: movies[index],
-                    ),
+                  Routes.movieDetailsRouteName,
+                  arguments: MovieDetailsArguments(
+                    movie: movies[index],
+                    bloc: lastMovieBloc,
                   ),
                 );
               },

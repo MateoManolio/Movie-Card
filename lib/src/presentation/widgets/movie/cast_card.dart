@@ -1,38 +1,50 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
+import '../../../domain/entity/cast.dart';
 
 class CastCard extends StatelessWidget {
   const CastCard({
-    super.key,
-    required this.padCast,
-    required this.borderRadius,
     required this.castWidth,
     required this.castHeight,
     required this.index,
     required this.images,
+    super.key,
   });
 
   final int index;
-  final double padCast;
-  final double borderRadius;
-  final List<String> images;
+  static const double padCast = 10.0;
+  static const double borderRadius = 10.0;
+  final List<Cast> images;
   final double castWidth;
   final double castHeight;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(padCast),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(borderRadius),
-        child: Image(
-          image: NetworkImage(
-            images[index],
+    if (images[index].profilePath != 'null') {
+      return Padding(
+        padding: EdgeInsets.all(padCast),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(borderRadius),
+          child: CachedNetworkImage(
+            imageUrl: images[index].assetsCastPath,
+            placeholder: (BuildContext context, String url) => Center(
+              child: CircularProgressIndicator(),
+            ),
+            errorWidget: (
+              BuildContext context,
+              String url,
+              Object error,
+            ) =>
+                Icon(Icons.error),
+            width: castWidth,
+            height: castHeight,
+            fit: BoxFit.cover,
           ),
-          width: castWidth,
-          height: castHeight,
-          fit: BoxFit.cover,
         ),
-      ),
-    );
+      );
+    } else {
+      return Container();
+    }
   }
 }

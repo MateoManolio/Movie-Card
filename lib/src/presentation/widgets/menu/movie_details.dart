@@ -6,9 +6,9 @@ import '../shared/poster.dart';
 
 class MenuMovieDetails extends StatelessWidget {
   const MenuMovieDetails({
-    super.key,
     required this.posterWidth,
     required this.movie,
+    super.key,
   });
 
   final double posterWidth;
@@ -25,7 +25,7 @@ class MenuMovieDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
+      children: <Widget>[
         Hero(
           tag: movie.posterName,
           child: Poster(
@@ -37,7 +37,7 @@ class MenuMovieDetails extends StatelessWidget {
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+            children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(padding),
                 child: Text(
@@ -56,9 +56,8 @@ class MenuMovieDetails extends StatelessWidget {
                 height: separator,
               ),
               Row(
-                mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
+                children: <Widget>[
                   Text(
                     score,
                     style: subtitleStyle,
@@ -74,7 +73,7 @@ class MenuMovieDetails extends StatelessWidget {
               ),
               const SizedBox(
                 height: separator,
-              )
+              ),
             ],
           ),
         ),
