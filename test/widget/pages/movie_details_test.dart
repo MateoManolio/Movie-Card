@@ -2,27 +2,24 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:movie_card/src/data/models/cast_model.dart';
 import 'package:movie_card/src/data/models/movie_model.dart';
 import 'package:movie_card/src/domain/entity/cast.dart';
 import 'package:movie_card/src/domain/entity/event.dart';
 import 'package:movie_card/src/domain/entity/movie.dart';
-import 'package:movie_card/src/presentation/bloc/cast_bloc.dart';
-import 'package:movie_card/src/presentation/bloc/movie_bloc.dart';
+import 'package:movie_card/src/presentation/bloc/movie_details_bloc.dart';
 import 'package:movie_card/src/presentation/pages/movie_details.dart';
 import 'package:movie_card/src/presentation/widgets/loaders/cast_loader.dart';
 import 'package:movie_card/src/presentation/widgets/movie/cast_widget.dart';
 import 'package:movie_card/src/presentation/widgets/movie/movie_presentation.dart';
 
-class MockMovieBloc extends MovieBloc {
-  final StreamController<Event<Movie>> movieStreamController =
-      StreamController<Event<Movie>>.broadcast();
-}
 
-class MockCastBloc extends CastBloc {
+class MockCastBloc extends Mock implements MovieDetailsBloc {
   @override
   final StreamController<Event<List<Cast>>> castStreamController =
   StreamController<Event<List<Cast>>>.broadcast();
+
 }
 
 final List<Cast> cast = CastModel.fromListOfJson({
@@ -66,7 +63,7 @@ void main() {
         MaterialApp(
           home: MovieDetails(
             movie: MovieModel.mockMovie(),
-            movieBloc: MockMovieBloc(), castBloc: mockCastBloc,
+            movieBloc: mockCastBloc, setLastMovie: (Movie movie) {  },
           ),
         ),
       );

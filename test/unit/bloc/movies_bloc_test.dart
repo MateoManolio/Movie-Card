@@ -1,35 +1,27 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:movie_card/src/core/usecase/i_usecase.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:movie_card/src/core/util/data_state.dart';
 import 'package:movie_card/src/core/util/enums.dart';
-import 'package:movie_card/src/data/models/cast_model.dart';
 import 'package:movie_card/src/data/models/movie_model.dart';
 import 'package:movie_card/src/domain/entity/event.dart';
 import 'package:movie_card/src/domain/entity/movie.dart';
+import 'package:movie_card/src/domain/usecase/fetch_last_seen_movie_usecase.dart';
+import 'package:movie_card/src/domain/usecase/movies_by_type_usecase.dart';
 import 'package:movie_card/src/presentation/bloc/movies_bloc.dart';
 
-class MockPopularMoviesUseCase extends Mock
-    implements IUseCase<Future<DataState<List<Movie>>>, dynamic> {
+class MockGetMoviesUseCase extends Mock
+    implements MoviesByTypeUseCase {
   @override
   Future<DataState<List<Movie>>> call([dynamic params]) async {
     return DataSuccess<List<Movie>>(data: movies);
   }
 }
 
-class MockNowPlayingMoviesUseCase extends Mock
-    implements IUseCase<Future<DataState<List<Movie>>>, dynamic> {
+class MockFetchLastSeenMovieUseCase extends Mock
+    implements FetchLastSeenMovieUseCase {
   @override
-  Future<DataState<List<Movie>>> call([dynamic params]) async {
-    return DataSuccess<List<Movie>>(data: movies);
-  }
-}
-
-class MockUpcomingMoviesUseCase extends Mock
-    implements IUseCase<Future<DataState<List<Movie>>>, dynamic> {
-  @override
-  Future<DataState<List<Movie>>> call([dynamic params]) async {
-    return DataSuccess<List<Movie>>(data: movies);
+  Future<Movie> call([int? params]) {
+    return Future<Movie>.value(movie);
   }
 }
 
@@ -52,20 +44,12 @@ void main() {
     'MoviesBloc',
     () {
       late MoviesBloc moviesBloc;
-      late MockPopularMoviesUseCase mockPopularMoviesUseCase;
-      late MockNowPlayingMoviesUseCase mockNowPlayingMoviesUseCase;
-      late MockUpcomingMoviesUseCase mockUpcomingMoviesUseCase;
-
       setUp(
         () {
-          mockPopularMoviesUseCase = MockPopularMoviesUseCase();
-          mockNowPlayingMoviesUseCase = MockNowPlayingMoviesUseCase();
-          mockUpcomingMoviesUseCase = MockUpcomingMoviesUseCase();
-
+          final MockGetMoviesUseCase mockPopularMoviesUseCase = MockGetMoviesUseCase();
+          final MockFetchLastSeenMovieUseCase fetchFirstLastMovie = MockFetchLastSeenMovieUseCase();
           moviesBloc = MoviesBloc(
-            getPopularMovies: mockPopularMoviesUseCase,
-            getNowPlayingMovies: mockNowPlayingMoviesUseCase,
-            getUpcomingMovies: mockUpcomingMoviesUseCase,
+            getMoviesUseCase: mockPopularMoviesUseCase, fetchFirstMovie: fetchFirstLastMovie,
           );
         },
       );

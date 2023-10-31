@@ -4,16 +4,16 @@ import 'dart:io';
 import 'package:http/http.dart' show Client;
 import 'package:http/src/response.dart';
 
-import '../../core/util/data_state.dart';
-import '../../core/util/enums.dart';
-import '../../core/util/strings.dart';
-import '../../domain/entity/genre.dart';
-import '../../domain/entity/movie.dart';
-import '../../domain/repository/i_my_repository.dart';
-import '../models/cast_model.dart';
-import '../models/genre_model.dart';
-import '../models/movie_model.dart';
-import '../models/response_model.dart';
+import '../../../core/util/data_state.dart';
+import '../../../core/util/enums.dart';
+import '../../../core/util/strings.dart';
+import '../../../domain/entity/genre.dart';
+import '../../../domain/entity/movie.dart';
+import '../../../domain/repository/i_my_repository.dart';
+import '../../models/cast_model.dart';
+import '../../models/genre_model.dart';
+import '../../models/movie_model.dart';
+import '../../models/response_model.dart';
 
 class APIRepository implements IMyRepository {
   static const String messageIdError = 'missing id: id must be provided';
@@ -39,44 +39,29 @@ class APIRepository implements IMyRepository {
   });
 
   @override
-  Future<DataState<List<Genre>>> loadGenres(List<int>? genres) async {
-    if(genres != null){
-      List<GenreModel> genresFromApi = <GenreModel>[];
-      try {
-        final Response response = await client.get(
-          Uri.parse(
-            '$genresUri$apiKeyUri',
-          ),
+  Future<DataState<List<Genre>>> loadGenres() async {
+    try {
+      final Response response = await client.get(
+        Uri.parse(
+          '$genresUri$apiKeyUri',
+        ),
+      );
+      if (response.statusCode == HttpStatus.ok) {
+        final List<Map<String, dynamic>> genreList =
+            List<Map<String, dynamic>>.from(
+          json.decode(response.body)['genres'],
         );
-        if (response.statusCode == HttpStatus.ok) {
-          final List<Map<String, dynamic>> genreList =
-          List<Map<String, dynamic>>.from(
-            json.decode(response.body)['genres'],
-          );
-          genreList.forEach(
-                (Map<String, dynamic> genreJson) {
-              GenreModel genre = GenreModel.fromJson(genreJson);
-              genresFromApi.add(genre);
-            },
-          );
-          return DataSuccess<List<Genre>>(
-            data: genresFromApi
-                .where((GenreModel genre) => genres!.contains(genre.id))
-                .toList(),
-          );
-        } else {
-          return DataFailure<List<Genre>>(
-            error: Exception(messageLoadGenresError),
-          );
-        }
-      } catch (error) {
+        return DataSuccess<List<Genre>>(
+          data: GenreModel.listOfGenres(genreList),
+        );
+      } else {
         return DataFailure<List<Genre>>(
-          error: Exception(error),
+          error: Exception(messageLoadGenresError),
         );
       }
-    }else{
+    } catch (error) {
       return DataFailure<List<Genre>>(
-        error: Exception(messageMissingParameters),
+        error: Exception(error),
       );
     }
   }
@@ -91,10 +76,11 @@ class APIRepository implements IMyRepository {
       if (response.statusCode == HttpStatus.ok) {
         final Map<String, dynamic> results = json.decode(response.body);
         final ResponseModel responseModel = ResponseModel(
-            page: results['page'],
-            totalResults: results['total_results'],
-            totalPages: results['total_pages'],
-            result: results['results']);
+          page: results['page'],
+          totalResults: results['total_results'],
+          totalPages: results['total_pages'],
+          result: results['results'],
+        );
         return DataSuccess<List<MovieModel>>(
           data: responseModel.movies,
         );

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:movie_card/src/presentation/pages/popular.dart';
-import 'package:movie_card/src/presentation/widgets/drawer/drawer.dart';
-import 'package:movie_card/src/presentation/widgets/drawer/side_menu_elements.dart';
 
+import '../../core/util/enums.dart';
+import 'popular.dart';
+import '../widgets/drawer/drawer.dart';
+import '../widgets/drawer/side_menu_elements.dart';
 import '../../core/util/ui_consts.dart';
 import '../bloc/movies_bloc.dart';
 import '../widgets/menu/exit_alert.dart';
@@ -11,7 +12,10 @@ import '../widgets/menu/menu_custom_navbar.dart';
 import 'movie_menu.dart';
 
 class HomePage extends StatefulWidget {
+  final MoviesBloc bloc;
+
   const HomePage({
+    required this.bloc,
     super.key,
   });
 
@@ -26,7 +30,6 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
   late List<Widget> _pages;
   late PageController _pageController;
   static const String backgroundAssets = 'assets/menu_background.png';
-  final MoviesBloc bloc = MoviesBloc();
   static const int animationPageTransition = 500;
 
   // For the drawer
@@ -36,17 +39,19 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    bloc.initialize();
+    widget.bloc.initialize();
     super.initState();
     _pages = <Widget>[
-      MovieMenu(moviesBloc: bloc),
-      Popular(
-        popularMoviesBloc: bloc,
-        nowPlayingMoviesBloc: bloc,
+      MovieMenu(
+        moviesBloc: widget.bloc,
       ),
       Popular(
-        popularMoviesBloc: bloc,
-        nowPlayingMoviesBloc: bloc,
+        popularMoviesStream: widget.bloc.popularStream,
+        nowPlayingMoviesStream: widget.bloc.nowPlayingStream,
+        onPageInit: () {
+          widget.bloc.getMoviesByType(Endpoint.popular);
+          widget.bloc.getMoviesByType(Endpoint.nowPlaying);
+        },
       ),
     ];
     _pageController = PageController(initialPage: selectedIndex);

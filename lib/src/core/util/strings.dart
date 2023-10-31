@@ -4,6 +4,8 @@ const String movieParameter = 'movie';
 
 const String blocParameter = 'bloc';
 
+const String lastMoviePreference = 'movieId';
+
 const String messageMovieError = "Failed to load movies";
 
 // API

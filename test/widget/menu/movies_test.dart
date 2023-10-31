@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_card/src/domain/entity/movie.dart';
-import 'package:movie_card/src/presentation/bloc/movie_bloc.dart';
 import 'package:movie_card/src/presentation/widgets/menu/movies.dart';
 import 'package:movie_card/src/presentation/widgets/shared/custom_card.dart';
 
@@ -9,7 +8,6 @@ void main() {
   testWidgets(
     'Verify that the widget renders correctly',
     (WidgetTester tester) async {
-      final MovieBloc movieBloc = MovieBloc();
       final List<Movie> movies = <Movie>[
         Movie(
           id: 1,
@@ -27,7 +25,7 @@ void main() {
         MaterialApp(
           home: Movies(
             movies: movies,
-            lastMovieBloc: movieBloc,
+            setLastMovie: (Movie movie) {  },
           ),
         ),
       );

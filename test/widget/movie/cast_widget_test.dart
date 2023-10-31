@@ -7,9 +7,9 @@ import 'package:movie_card/src/presentation/widgets/movie/cast_widget.dart';
 void main() {
   final List<Cast> mockCastImages = <Cast>[
     Cast(
-      id: '1',
+      id: 1,
       profilePath: 'profilePath',
-      movieId: '100',
+      movieId: 100,
     ),
   ];
 

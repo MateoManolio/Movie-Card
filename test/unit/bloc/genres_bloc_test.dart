@@ -4,22 +4,25 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:movie_card/src/core/usecase/i_usecase.dart';
 import 'package:movie_card/src/core/util/data_state.dart';
+import 'package:movie_card/src/data/models/movie_model.dart';
 import 'package:movie_card/src/domain/entity/event.dart';
 import 'package:movie_card/src/domain/entity/genre.dart';
+import 'package:movie_card/src/domain/entity/movie.dart';
+import 'package:movie_card/src/domain/usecase/fetch_genres_usecase.dart';
 import 'package:movie_card/src/presentation/bloc/genres_bloc.dart';
 
 class MockFetchGenresSuccessUseCase extends Mock
-    implements IUseCase<Future<DataState<List<Genre>>>, List<int>> {
+    implements FetchGenresUseCase {
   @override
-  Future<DataState<List<Genre>>> call([List<int>? params]) async {
+  Future<DataState<List<Genre>>> call([Movie? params]) async {
     return Future<DataState<List<Genre>>>.value(successResult);
   }
 }
 
 class MockFetchGenresFailureUseCase extends Mock
-    implements IUseCase<Future<DataState<List<Genre>>>, List<int>> {
+    implements FetchGenresUseCase {
   @override
-  Future<DataState<List<Genre>>> call([List<int>? params]) async {
+  Future<DataState<List<Genre>>> call([Movie? params]) async {
     return Future<DataState<List<Genre>>>.value(errorResult);
   }
 }
@@ -29,16 +32,28 @@ final DataSuccess<List<Genre>> successResult =
 final DataFailure<List<Genre>> errorResult =
     DataFailure<List<Genre>>(error: Exception('Failed to fetch genres'));
 
+final Movie movie = MovieModel(
+  id: 502356,
+  title: "Mario Bros. Movie",
+  posterName: "/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg",
+  backdropName: "/9n2tJBplPbgR2ca05hS5CKXwP2c.jpg",
+  releaseDate: "2023-04-05",
+  overview:
+  "While working underground to fix a water main, Brooklyn plumbers—and brothers—Mario and Luigi are transported down a mysterious pipe and wander into a magical new world. But when the brothers are separated, Mario embarks on an epic quest to find Luigi.",
+  genres: <int>[16, 10751, 12, 14, 35],
+  score: 0.78,
+);
+
+
 void main() {
   test(
     'should emit success event when fetching genres successfully',
     () async {
-      final List<int> genres = <int>[1, 2, 3];
 
       final MockFetchGenresSuccessUseCase mockFetchGenresUseCase =
           MockFetchGenresSuccessUseCase();
       final GenresBloc genresBlocSuccess =
-          GenresBloc(fetchGenres: mockFetchGenresUseCase);
+          GenresBloc(fetchGenresUseCase: mockFetchGenresUseCase);
       unawaited(
         expectLater(
           genresBlocSuccess.stream,
@@ -51,7 +66,7 @@ void main() {
         ),
       );
 
-      await genresBlocSuccess.fetchGenres(genres);
+      await genresBlocSuccess.fetchGenres(movie);
       genresBlocSuccess.dispose();
     },
   );
@@ -62,9 +77,7 @@ void main() {
       final MockFetchGenresFailureUseCase mockFetchGenresUseCase =
           MockFetchGenresFailureUseCase();
       final GenresBloc genresBlocFailure =
-          GenresBloc(fetchGenres: mockFetchGenresUseCase);
-
-      final List<int> genres = <int>[1, 2, 3];
+          GenresBloc(fetchGenresUseCase: mockFetchGenresUseCase);
 
       unawaited(
         expectLater(
@@ -78,7 +91,7 @@ void main() {
         ),
       );
 
-      await genresBlocFailure.fetchGenres(genres);
+      await genresBlocFailure.fetchGenres(movie);
     },
   );
 }

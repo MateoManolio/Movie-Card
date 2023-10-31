@@ -12,4 +12,12 @@ class GenreModel extends Genre {
       name: json['name'],
     );
   }
+
+  static List<GenreModel> listOfGenres(List<Map<String, dynamic>> list) {
+    List<GenreModel> genres = List<GenreModel>.generate(
+      list.length,
+          (int index) => GenreModel.fromJson(list[index]),
+    );
+    return genres;
+  }
 }
