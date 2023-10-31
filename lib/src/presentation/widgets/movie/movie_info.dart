@@ -13,12 +13,14 @@ import '../shared/error_class.dart';
 class MovieInfo extends StatefulWidget {
   const MovieInfo({
     required this.padGenresCard,
+    required this.genreBloc,
     required this.movie,
     super.key,
   });
 
   final double padGenresCard;
   final Movie movie;
+  final GenresBloc genreBloc;
 
   static const double opacity_1 = 0.75;
   static const double padCard = 8.0;
@@ -37,11 +39,11 @@ class MovieInfo extends StatefulWidget {
 }
 
 class _MovieInfoState extends State<MovieInfo> {
-  final GenresBloc _genreBloc = GenresBloc();
+  static const String missingGenre = 'Unknown';
 
   @override
   void initState() {
-    _genreBloc.fetchGenres(widget.movie.genres);
+    widget.genreBloc.fetchGenres(widget.movie);
     super.initState();
   }
 
@@ -87,7 +89,7 @@ class _MovieInfoState extends State<MovieInfo> {
                     child: SizedBox(
                       width: MovieInfo.textGenderWidth,
                       child: StreamBuilder<Event<List<Genre>>>(
-                        stream: _genreBloc.stream,
+                        stream: widget.genreBloc.stream,
                         builder: (
                           BuildContext context,
                           AsyncSnapshot<Event<List<Genre>>> snapshot,
@@ -97,6 +99,7 @@ class _MovieInfoState extends State<MovieInfo> {
                             case Status.loading:
                               return DefaultLoader();
                             case Status.empty:
+                              return Text(missingGenre);
                             case Status.success:
                               return Text(
                                 snapshot.data!.data!

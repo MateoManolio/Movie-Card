@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:movie_card/src/data/models/movie_model.dart';
 import 'package:movie_card/src/domain/entity/event.dart';
 import 'package:movie_card/src/domain/entity/movie.dart';
@@ -46,7 +47,7 @@ void main() {
   );
 }
 
-class MockMoviesBloc extends MoviesBloc {
+class MockMoviesBloc extends Mock implements MoviesBloc {
   @override
   final StreamController<Event<List<Movie>>> popularStreamController =
       StreamController<Event<List<Movie>>>();
@@ -55,3 +56,4 @@ class MockMoviesBloc extends MoviesBloc {
   Stream<Event<List<Movie>>> get popularStream =>
       popularStreamController.stream;
 }
+

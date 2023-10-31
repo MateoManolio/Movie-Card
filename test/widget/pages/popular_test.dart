@@ -82,8 +82,9 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Popular(
-            nowPlayingMoviesBloc: mockMoviesBloc,
-            popularMoviesBloc: mockMoviesBloc,
+            nowPlayingMoviesStream: mockMoviesBloc.nowPlayingStream,
+            popularMoviesStream: mockMoviesBloc.popularStream,
+            onPageInit: () {},
           ),
         ),
       );
@@ -116,8 +117,9 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Popular(
-            nowPlayingMoviesBloc: mockMoviesBloc,
-            popularMoviesBloc: mockMoviesBloc,
+            nowPlayingMoviesStream: mockMoviesBloc.nowPlayingStream,
+            popularMoviesStream: mockMoviesBloc.popularStream,
+            onPageInit: () {},
           ),
         ),
       );

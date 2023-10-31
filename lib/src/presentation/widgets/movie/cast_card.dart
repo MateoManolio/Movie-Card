@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/util/ui_consts.dart';
 import '../../../domain/entity/cast.dart';
+import '../shared/custom_card.dart';
 
 class CastCard extends StatelessWidget {
   const CastCard({
@@ -15,13 +17,16 @@ class CastCard extends StatelessWidget {
   final int index;
   static const double padCast = 10.0;
   static const double borderRadius = 10.0;
+  static const double textPadding = 10.0;
+  static const double cardPadding = 0;
+  static const String asset = 'assets/error/default_cast.png';
+  static const String messageError = 'No internet';
   final List<Cast> images;
   final double castWidth;
   final double castHeight;
 
   @override
   Widget build(BuildContext context) {
-    if (images[index].profilePath != 'null') {
       return Padding(
         padding: EdgeInsets.all(padCast),
         child: ClipRRect(
@@ -36,15 +41,28 @@ class CastCard extends StatelessWidget {
               String url,
               Object error,
             ) =>
-                Icon(Icons.error),
+                CustomCard(
+              padding: cardPadding,
+              child: Column(
+                children: <Widget>[
+                  Image.asset(asset),
+                  Padding(
+                    padding: EdgeInsets.only(top: textPadding),
+                    child: Text(
+                      messageError,
+                      style: TextStyle(
+                        color: colors.background,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             width: castWidth,
             height: castHeight,
             fit: BoxFit.cover,
           ),
         ),
       );
-    } else {
-      return Container();
-    }
   }
 }

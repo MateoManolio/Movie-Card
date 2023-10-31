@@ -6,27 +6,16 @@ import '../../core/util/data_state.dart';
 import '../../domain/entity/cast.dart';
 import '../../domain/entity/event.dart';
 import '../../domain/entity/movie.dart';
-import '../../domain/usecase/load_cast_usecase.dart';
 
-class CastBloc extends IBloc {
-
+class MovieDetailsBloc extends IBloc {
   final StreamController<Event<List<Cast>>> castStreamController =
   StreamController<Event<List<Cast>>>.broadcast();
 
-  final IUseCase<Future<DataState<List<Cast>>>, Movie> _loadCast;
+  final IUseCase<Future<DataState<List<Cast>>>, int> loadCastUseCase;
 
-  CastBloc({
-    IUseCase<Future<DataState<List<Cast>>>, Movie>? loadCast,
-  })  :  _loadCast = loadCast ?? LoadCastUseCase();
-
-
-  void loadCast(Movie movie) async {
-    DataState<List<Cast>> cast = await _loadCast.call(movie);
-    cast is DataSuccess
-        ? castStreamController.sink.add(Event<List<Cast>>.success(cast.data!))
-        : castStreamController.sink
-        .addError(Event<List<Cast>>.error(cast.error!));
-  }
+  MovieDetailsBloc({
+    required this.loadCastUseCase,
+  });
 
   @override
   void dispose() {
@@ -36,6 +25,14 @@ class CastBloc extends IBloc {
   @override
   Future<void> initialize() async {
     // nothing
+  }
+
+  void loadCast(int movieId) async {
+    DataState<List<Cast>> cast = await loadCastUseCase.call(movieId);
+    cast is DataSuccess
+        ? castStreamController.sink.add(Event<List<Cast>>.success(cast.data!))
+        : castStreamController.sink
+        .addError(Event<List<Cast>>.error(cast.error!));
   }
 
   Stream<Event<List<Cast>>> get castStream => castStreamController.stream;

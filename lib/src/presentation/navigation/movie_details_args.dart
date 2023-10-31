@@ -1,12 +1,11 @@
-import '../bloc/movie_bloc.dart';
 import '../../domain/entity/movie.dart';
 
 class MovieDetailsArguments {
   final Movie movie;
-  final MovieBloc bloc;
+  final Function(Movie) setLastMovie;
 
   MovieDetailsArguments({
     required this.movie,
-    required this.bloc,
+    required this.setLastMovie,
   });
 }

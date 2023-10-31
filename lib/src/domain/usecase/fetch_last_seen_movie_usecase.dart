@@ -1,12 +1,14 @@
+import '../../data/repository/movies_repository.dart';
 import '../../core/usecase/i_usecase.dart';
-import '../../data/repository/my_local_repository.dart';
 import '../entity/movie.dart';
 
-class FetchLastSeenMovieUseCase extends IUseCase<Movie,dynamic> {
-  final MyLocalRepository repository = MyLocalRepository();
+class FetchLastSeenMovieUseCase extends IUseCase<Future<Movie>,int> {
+  final MovieRepository repository;
+
+  FetchLastSeenMovieUseCase({required this.repository});
 
   @override
-  Movie call([params]) {
-    return repository.getMockMovie;
+  Future<Movie> call([int? params]) async {
+    return repository.getMovieById(params!);
   }
 }
