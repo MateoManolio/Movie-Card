@@ -21,10 +21,6 @@ class CastRepository {
           await repository.loadCast(movieId);
       if (apiResponse.state == Status.success) {
         await database.castDao.insertCast(apiResponse.data!);
-        /*for (int i = 0; i < apiResponse.data!.length; i++) {
-          final Cast cast = apiResponse.data![i];
-
-        }*/
       }
     }
     return DataSuccess<List<Cast>>(

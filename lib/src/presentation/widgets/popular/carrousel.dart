@@ -47,6 +47,7 @@ class _CarrouselState extends State<Carrousel> {
     return Timer.periodic(
       Duration(seconds: switchDuration),
       (Timer timer) {
+        debugPrint("Tick");
         _currentPage < numberOfElements ? _currentPage++ : _currentPage = 0;
         _pageController.animateToPage(
           _currentPage,
@@ -62,7 +63,6 @@ class _CarrouselState extends State<Carrousel> {
   @override
   initState() {
     widget._timer = timer();
-    //widget.moviesBloc.getMoviesByType(Endpoint.nowPlaying);
     super.initState();
   }
 
@@ -89,15 +89,17 @@ class _CarrouselState extends State<Carrousel> {
               BuildContext context,
               int index,
             ) {
-              return GestureDetector(
+              return InkWell(
                 onTap: () {
+                widget._timer.cancel();
                   Navigator.pushNamed(
                     context,
                     Routes.movieDetailsRouteName,
                     arguments: MovieDetailsArguments(
                       movie: widget.movies[_currentPage],
-                      setLastMovie:
-                          widget.setLastMovie,
+                      setLastMovie: widget.setLastMovie,
+                      backdropTag: '4',
+                      posterTag: '3',
                     ),
                   );
                 },

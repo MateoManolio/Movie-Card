@@ -47,7 +47,7 @@ class LastSeen extends StatelessWidget {
               Routes.movieDetailsRouteName,
               arguments: MovieDetailsArguments(
                 movie: movie,
-                setLastMovie: setLastMovie,
+                setLastMovie: setLastMovie, backdropTag: movie.backdropName, posterTag: '',
               ),
             );
           },

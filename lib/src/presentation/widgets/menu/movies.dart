@@ -53,7 +53,7 @@ class Movies extends StatelessWidget {
                   Routes.movieDetailsRouteName,
                   arguments: MovieDetailsArguments(
                     movie: movies[index],
-                    setLastMovie: setLastMovie,
+                    setLastMovie: setLastMovie, backdropTag: '', posterTag: movies[index].posterName,
                   ),
                 );
               },

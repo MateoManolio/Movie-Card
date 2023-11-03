@@ -42,6 +42,8 @@ abstract class AppRoutes {
                 listen: false,
               ),
               setLastMovie: arguments.setLastMovie,
+              posterTag: arguments.posterTag,
+              backdropTag: arguments.backdropTag,
             );
           },
         );

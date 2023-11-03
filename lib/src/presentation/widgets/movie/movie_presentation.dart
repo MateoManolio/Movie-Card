@@ -16,9 +16,13 @@ import 'movie_info.dart';
 class MoviePresentation extends StatelessWidget {
   const MoviePresentation({
     required this.movie,
+    required this.posterTag,
+    required this.backdropTag,
     super.key,
   });
 
+  final String posterTag;
+  final String backdropTag;
   final Movie movie;
 
   static const double movieCardsContainerHeight = 0.5;
@@ -36,7 +40,7 @@ class MoviePresentation extends StatelessWidget {
         children: <Widget>[
           Positioned(
             child: Hero(
-              tag: movie.backdropName,
+              tag: backdropTag,
               child: AspectRatio(
                 aspectRatio: 16/10,
                 child: CachedNetworkImage(
@@ -78,7 +82,7 @@ class MoviePresentation extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Hero(
-                  tag: movie.posterName,
+                  tag: posterTag,
                   child: Poster(
                     posterPadding: pad1,
                     posterName: movie.assetsPosterPath,

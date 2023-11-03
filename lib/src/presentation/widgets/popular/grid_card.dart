@@ -52,16 +52,21 @@ class _GridCardState extends State<GridCard> {
                   arguments: MovieDetailsArguments(
                     movie: widget.movie,
                     setLastMovie: widget.setLastMovie,
+                    backdropTag: '6',
+                    posterTag: widget.movie.posterName,
                   ),
                 );
               },
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(posterRadius),
-                  topRight: Radius.circular(posterRadius),
-                ),
-                child: CacheImage(
-                  url: widget.movie.assetsPosterPath,
+              child: Hero(
+                tag: widget.movie.posterName,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(posterRadius),
+                    topRight: Radius.circular(posterRadius),
+                  ),
+                  child: CacheImage(
+                    url: widget.movie.assetsPosterPath,
+                  ),
                 ),
               ),
             ),

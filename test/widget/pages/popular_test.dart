@@ -84,6 +84,7 @@ void main() {
           home: Popular(
             nowPlayingMoviesStream: mockMoviesBloc.nowPlayingStream,
             popularMoviesStream: mockMoviesBloc.popularStream,
+            onPageInit: () {},
           ),
         ),
       );
@@ -118,6 +119,7 @@ void main() {
           home: Popular(
             nowPlayingMoviesStream: mockMoviesBloc.nowPlayingStream,
             popularMoviesStream: mockMoviesBloc.popularStream,
+            onPageInit: () {},
           ),
         ),
       );
