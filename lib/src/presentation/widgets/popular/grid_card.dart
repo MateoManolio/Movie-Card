@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import '../shared/cache_image.dart';
 
+import '../../../config/route/app_routes.dart';
 import '../../../core/util/ui_consts.dart';
 import '../../../domain/entity/movie.dart';
+import '../../navigation/movie_details_args.dart';
+import '../shared/cache_image.dart';
 import '../shared/custom_card.dart';
 
 class GridCard extends StatefulWidget {
   final Movie movie;
+  final Function(Movie) setLastMovie;
 
   const GridCard({
+    required this.setLastMovie,
     required this.movie,
     super.key,
   });
@@ -18,13 +22,20 @@ class GridCard extends StatefulWidget {
 }
 
 class _GridCardState extends State<GridCard> {
-  bool isLiked = false;
-  bool isSaved = false;
+  late bool isLiked;
+  late bool isSaved;
 
   static const double posterRadius = 8;
   static const double spacePosterButtons = 9.5;
   static const double avatarColorOpacity = 0.5;
   static const double padding = 5;
+
+  @override
+  void initState() {
+    isLiked = widget.movie.liked;
+    isSaved = widget.movie.saved;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +44,25 @@ class _GridCardState extends State<GridCard> {
       body: CustomCard(
         child: Column(
           children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(posterRadius),
-                topRight: Radius.circular(posterRadius),
-              ),
-              child: CacheImage(
-                url: widget.movie.assetsPosterPath,
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  Routes.movieDetailsRouteName,
+                  arguments: MovieDetailsArguments(
+                    movie: widget.movie,
+                    setLastMovie: widget.setLastMovie,
+                  ),
+                );
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(posterRadius),
+                  topRight: Radius.circular(posterRadius),
+                ),
+                child: CacheImage(
+                  url: widget.movie.assetsPosterPath,
+                ),
               ),
             ),
             SizedBox(

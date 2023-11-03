@@ -4,7 +4,6 @@ import '../../core/util/enums.dart';
 import '../../core/util/ui_consts.dart';
 import '../../domain/entity/event.dart';
 import '../../domain/entity/movie.dart';
-import '../bloc/movies_bloc.dart';
 import '../widgets/loaders/grid_view_loader.dart';
 import '../widgets/loaders/last_seen_loader.dart';
 import '../widgets/popular/carrousel.dart';
@@ -15,11 +14,13 @@ class Popular extends StatefulWidget {
   final Stream<Event<List<Movie>>> popularMoviesStream;
   final Stream<Event<List<Movie>>> nowPlayingMoviesStream;
   final Function() onPageInit;
+  final Function(Movie) setLastMovie;
 
   const Popular({
     required this.popularMoviesStream,
     required this.nowPlayingMoviesStream,
     required this.onPageInit,
+    required this.setLastMovie,
     super.key,
   });
 
@@ -39,7 +40,6 @@ class _PopularState extends State<Popular> {
   static const int gridViewLoaderListSize = 4;
 
   static const double endHeight = 150;
-
 
   get selectedIndex => 0;
 
@@ -66,7 +66,10 @@ class _PopularState extends State<Popular> {
                   return LastSeenLoader();
                 case Status.empty:
                 case Status.success:
-                  return Carrousel(movies: snapshot.data!.data!);
+                  return Carrousel(
+                    movies: snapshot.data!.data!,
+                    setLastMovie: widget.setLastMovie,
+                  );
                 case Status.error:
                   return CustomError(
                     message: errorMessageNowPlaying,
@@ -114,7 +117,10 @@ class _PopularState extends State<Popular> {
                         BuildContext context,
                         int index,
                       ) {
-                        return GridCard(movie: snapshot.data!.data![index]);
+                        return GridCard(
+                          movie: snapshot.data!.data![index],
+                          setLastMovie: widget.setLastMovie,
+                        );
                       },
                     ),
                   );

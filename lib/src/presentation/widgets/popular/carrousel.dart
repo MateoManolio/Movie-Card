@@ -1,18 +1,23 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import '../../../config/route/app_routes.dart';
 import '../../../core/util/ui_consts.dart';
 import '../../../domain/entity/movie.dart';
+import '../../navigation/movie_details_args.dart';
 import '../shared/cache_image.dart';
 
 class Carrousel extends StatefulWidget {
   final List<Movie> movies;
+  final Function(Movie) setLastMovie;
   late Timer _timer;
 
   Timer get getTimer => _timer;
 
   Carrousel({
     required this.movies,
+    required this.setLastMovie,
     super.key,
   });
 
@@ -34,7 +39,6 @@ class _CarrouselState extends State<Carrousel> {
   static const double dotsHeight = 12;
 
   static const int numberOfElements = 10;
-
 
   PageController _pageController =
       PageController(viewportFraction: viewportFraction);
@@ -71,69 +75,76 @@ class _CarrouselState extends State<Carrousel> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        height: height,
-        child: Stack(
-          children: <Widget>[
-            PageView.builder(
-              controller: _pageController,
-              itemCount: numberOfElements,
-              onPageChanged: (int newPage) => setState(
-                    () => _currentPage = newPage,
-              ),
-              itemBuilder: (
-                  BuildContext context,
-                  int index,
-                  ) {
-                return Card(
+    return Container(
+      height: height,
+      child: Stack(
+        children: <Widget>[
+          PageView.builder(
+            controller: _pageController,
+            itemCount: numberOfElements,
+            onPageChanged: (int newPage) => setState(
+              () => _currentPage = newPage,
+            ),
+            itemBuilder: (
+              BuildContext context,
+              int index,
+            ) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    Routes.movieDetailsRouteName,
+                    arguments: MovieDetailsArguments(
+                      movie: widget.movies[_currentPage],
+                      setLastMovie:
+                          widget.setLastMovie,
+                    ),
+                  );
+                },
+                child: Card(
                   child: CacheImage(
                     url: widget.movies[index].assetsBackdropPath,
                   ),
                   clipBehavior: Clip.hardEdge,
-                );
-              },
-            ),
-            Positioned(
-              left: positionSideDots,
-              right: positionSideDots,
-              bottom: positionBottomDots,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  for (int i = 0; i < numberOfElements; i++)
-                    GestureDetector(
-                      key: ValueKey<int>(i),
-                      onTap: () => _pageController.animateToPage(
-                        i,
-                        duration: Duration(
-                          milliseconds: animationGoToPageDuration,
-                        ),
-                        curve: Curves.easeIn,
+                ),
+              );
+            },
+          ),
+          Positioned(
+            left: positionSideDots,
+            right: positionSideDots,
+            bottom: positionBottomDots,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                for (int i = 0; i < numberOfElements; i++)
+                  GestureDetector(
+                    key: ValueKey<int>(i),
+                    onTap: () => _pageController.animateToPage(
+                      i,
+                      duration: Duration(
+                        milliseconds: animationGoToPageDuration,
                       ),
-                      child: AnimatedContainer(
-                        duration: Duration(
-                          milliseconds: animationSwitchDuration,
-                        ),
-                        curve: Curves.easeInOut,
-                        width: i == _currentPage
-                            ? bigDotsWidth
-                            : smallDotsWidth,
-                        height: dotsHeight,
-                        decoration: BoxDecoration(
-                          color: i == _currentPage
-                              ? colors.primary
-                              : Colors.black26,
-                          shape: BoxShape.circle,
-                        ),
+                      curve: Curves.easeIn,
+                    ),
+                    child: AnimatedContainer(
+                      duration: Duration(
+                        milliseconds: animationSwitchDuration,
+                      ),
+                      curve: Curves.easeInOut,
+                      width: i == _currentPage ? bigDotsWidth : smallDotsWidth,
+                      height: dotsHeight,
+                      decoration: BoxDecoration(
+                        color:
+                            i == _currentPage ? colors.primary : Colors.black26,
+                        shape: BoxShape.circle,
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
