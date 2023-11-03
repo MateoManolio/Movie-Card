@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:movie_card/src/presentation/navigation/movie_details_args.dart';
+
+import '../../navigation/movie_details_args.dart';
 import '../../../config/route/app_routes.dart';
-import '../../bloc/movie_bloc.dart';
 import '../../../core/util/ui_consts.dart';
 import '../../../domain/entity/movie.dart';
 import '../shared/custom_card.dart';
 import 'movie_details.dart';
 
 class Movies extends StatelessWidget {
-
   const Movies({
     required this.movies,
-    required this.lastMovieBloc,
+    required this.setLastMovie,
     super.key,
   });
 
-  final MovieBloc lastMovieBloc;
+  final Function(Movie) setLastMovie;
   final List<Movie> movies;
 
   static const String title = "Movies";
@@ -54,7 +53,7 @@ class Movies extends StatelessWidget {
                   Routes.movieDetailsRouteName,
                   arguments: MovieDetailsArguments(
                     movie: movies[index],
-                    bloc: lastMovieBloc,
+                    setLastMovie: setLastMovie,
                   ),
                 );
               },

@@ -5,8 +5,7 @@ import '../../core/util/ui_consts.dart';
 import '../../domain/entity/cast.dart';
 import '../../domain/entity/event.dart';
 import '../../domain/entity/movie.dart';
-import '../bloc/cast_bloc.dart';
-import '../bloc/movie_bloc.dart';
+import '../bloc/movie_details_bloc.dart';
 import '../widgets/loaders/cast_loader.dart';
 import '../widgets/movie/cast_widget.dart';
 import '../widgets/movie/movie_details_custom_nav_bar.dart';
@@ -19,13 +18,13 @@ class MovieDetails extends StatefulWidget {
   static const String message = 'Error to bring the cast';
 
   final Movie movie;
-  final MovieBloc movieBloc;
-  final CastBloc castBloc;
+  final MovieDetailsBloc movieBloc;
+  final Function(Movie) setLastMovie;
 
   const MovieDetails({
     required this.movie,
     required this.movieBloc,
-    required this.castBloc,
+    required this.setLastMovie,
     super.key,
   });
 
@@ -37,17 +36,10 @@ class _MovieDetailsState extends State<MovieDetails> {
 
   @override
   void initState() {
-    widget.movieBloc.setLastMovie(widget.movie);
-    widget.castBloc.loadCast(widget.movie);
+    widget.setLastMovie(widget.movie);
+    widget.movieBloc.loadCast(widget.movie.id);
   }
-/*
-  @override
-  void dispose() {
-    widget.movieBloc.dispose();
-    widget.castBloc.dispose();
-    super.dispose();
-  }
-*/
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +55,7 @@ class _MovieDetailsState extends State<MovieDetails> {
               overview: widget.movie.overview,
             ),
             StreamBuilder<Event<List<Cast>>>(
-              stream: widget.castBloc.castStream,
+              stream: widget.movieBloc.castStream,
               builder: (
                 BuildContext context,
                 AsyncSnapshot<Event<List<Cast>>> snapshot,

@@ -1,13 +1,17 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:movie_card/src/core/util/data_state.dart';
+import 'package:movie_card/src/data/models/movie_model.dart';
+import 'package:movie_card/src/data/repository/genre_repository.dart';
 import 'package:movie_card/src/domain/entity/genre.dart';
+import 'package:movie_card/src/domain/entity/movie.dart';
 import 'package:movie_card/src/domain/repository/i_my_repository.dart';
 import 'package:movie_card/src/domain/usecase/fetch_genres_usecase.dart';
 
-class MockSuccessMyRepository extends Mock implements IMyRepository {
+class MockSuccessMyRepository extends Mock implements GenreRepository {
   @override
-  Future<DataState<List<Genre>>> loadGenres(List<int>? genres) {
+  Future<DataState<List<Genre>>> getGenreForMovie(Movie movie) {
     return Future<DataState<List<Genre>>>.value(
       DataSuccess<List<Genre>>(
         data: <Genre>[
@@ -20,9 +24,9 @@ class MockSuccessMyRepository extends Mock implements IMyRepository {
   }
 }
 
-class MockFailureMyRepository extends Mock implements IMyRepository {
+class MockFailureMyRepository extends Mock implements GenreRepository {
   @override
-  Future<DataState<List<Genre>>> loadGenres(List<int>? genres) {
+  Future<DataState<List<Genre>>> getGenreForMovie(Movie movie) {
     return Future<DataState<List<Genre>>>.value(
       DataFailure<List<Genre>>(
         error: Exception('No genres found'),
@@ -31,19 +35,33 @@ class MockFailureMyRepository extends Mock implements IMyRepository {
   }
 }
 
+final Movie movie = MovieModel(
+  id: 502356,
+  title: "Mario Bros. Movie",
+  posterName: "/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg",
+  backdropName: "/9n2tJBplPbgR2ca05hS5CKXwP2c.jpg",
+  releaseDate: "2023-04-05",
+  overview:
+  "While working underground to fix a water main, Brooklyn plumbers—and brothers—Mario and Luigi are transported down a mysterious pipe and wander into a magical new world. But when the brothers are separated, Mario embarks on an epic quest to find Luigi.",
+  genres: <int>[16, 10751, 12, 14, 35],
+  score: 0.78,
+);
+
+
 void main() {
+
   test(
     'should return a list of genres based on provided ids',
     () async {
       final MockSuccessMyRepository mockRepository = MockSuccessMyRepository();
+
       final FetchGenresUseCase useCase =
           FetchGenresUseCase(repository: mockRepository);
-      final List<int> genreIds = <int>[1, 3];
 
-      final DataState<List<Genre>> result = await useCase(genreIds);
+      final DataState<List<Genre>> result = await useCase.call(movie);
 
       expect(result, isA<DataSuccess<List<Genre>>>());
-      expect(result.data, hasLength(2));
+      expect(result.data, hasLength(3));
     },
   );
 
@@ -53,13 +71,10 @@ void main() {
       final MockFailureMyRepository mockRepository = MockFailureMyRepository();
       final FetchGenresUseCase useCase =
           FetchGenresUseCase(repository: mockRepository);
-      final List<int> genreIds = <int>[1, 3];
 
-      final DataState<List<Genre>> resultError = await useCase(genreIds);
-      final DataState<List<Genre>> resultNull = await useCase(null);
+      final DataState<List<Genre>> resultError = await useCase(movie);
 
       expect(resultError, isA<DataFailure<List<Genre>>>());
-      expect(resultNull, isA<DataFailure<List<Genre>>>());
     },
   );
 }

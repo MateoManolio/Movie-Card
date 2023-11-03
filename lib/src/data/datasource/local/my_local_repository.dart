@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import '../../core/util/data_state.dart';
-import '../models/genre_model.dart';
-import '../models/movie_model.dart';
+import '../../../core/util/data_state.dart';
+import '../../models/genre_model.dart';
+import '../../models/movie_model.dart';
 
 class MyLocalRepository {
   static const String moviesAsset = 'assets/movies.json';

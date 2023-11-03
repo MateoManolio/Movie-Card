@@ -1,21 +1,19 @@
-import 'package:http/http.dart';
-
 import '../../core/usecase/i_usecase.dart';
 import '../../core/util/data_state.dart';
-import '../../core/util/enums.dart';
-import '../../data/repository/api_repository.dart';
+import '../../data/repository/genre_repository.dart';
 import '../entity/genre.dart';
-import '../repository/i_my_repository.dart';
+import '../entity/movie.dart';
 
 class FetchGenresUseCase
-    extends IUseCase<Future<DataState<List<Genre>>>, List<int>> {
-  final IMyRepository repository;
+    extends IUseCase<Future<DataState<List<Genre>>>, Movie> {
+  final GenreRepository repository;
 
-  FetchGenresUseCase({IMyRepository? repository})
-      : repository = repository ?? APIRepository(client: Client());
+  FetchGenresUseCase({
+    required this.repository,
+  });
 
   @override
-  Future<DataState<List<Genre>>> call([List<int>? params]) async {
-    return await repository.loadGenres(params);
+  Future<DataState<List<Genre>>> call([Movie? params]) async {
+    return await repository.getGenreForMovie(params!);
   }
 }

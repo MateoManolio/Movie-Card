@@ -4,23 +4,22 @@ import 'package:flutter/material.dart';
 import '../../../config/route/app_routes.dart';
 import '../../../core/util/ui_consts.dart';
 import '../../../domain/entity/movie.dart';
-import '../../bloc/movie_bloc.dart';
 import '../../navigation/movie_details_args.dart';
 import '../loaders/last_seen_loader.dart';
-import '../shared/error_class.dart';
 import '../shared/text_over_things.dart';
 
 class LastSeen extends StatelessWidget {
   const LastSeen({
     required this.movie,
-    required this.movieBloc,
+    required this.setLastMovie,
     super.key,
   });
 
-  final MovieBloc movieBloc;
   final Movie movie;
+  final Function(Movie) setLastMovie;
 
   static const String title = "Last seen";
+  static const String asset = 'assets/error/default_backdrop.jpeg';
   static const double borderRadius = 9;
   static const double sidePadding = 10;
   static const double textSidePadding = sidePadding + 5;
@@ -48,7 +47,7 @@ class LastSeen extends StatelessWidget {
               Routes.movieDetailsRouteName,
               arguments: MovieDetailsArguments(
                 movie: movie,
-                bloc: movieBloc,
+                setLastMovie: setLastMovie,
               ),
             );
           },
@@ -72,7 +71,7 @@ class LastSeen extends StatelessWidget {
                         String url,
                         Object error,
                       ) =>
-                          CustomError(message: error.toString()),
+                          Image.asset(asset),
                     ),
                   ),
                 ),

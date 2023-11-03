@@ -1,6 +1,7 @@
 import '../../core/util/strings.dart';
-import 'cast.dart';
+import 'package:floor/floor.dart';
 
+@entity
 class Movie {
   Movie({
     required this.id,
@@ -15,6 +16,7 @@ class Movie {
     this.liked = false,
   });
 
+  @primaryKey
   final int id;
   final String title;
   final String posterName;

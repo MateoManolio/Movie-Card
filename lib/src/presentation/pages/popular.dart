@@ -12,12 +12,14 @@ import '../widgets/popular/grid_card.dart';
 import '../widgets/shared/error_class.dart';
 
 class Popular extends StatefulWidget {
-  final MoviesBloc popularMoviesBloc;
-  final MoviesBloc nowPlayingMoviesBloc;
+  final Stream<Event<List<Movie>>> popularMoviesStream;
+  final Stream<Event<List<Movie>>> nowPlayingMoviesStream;
+  final Function() onPageInit;
 
   const Popular({
-    required this.popularMoviesBloc,
-    required this.nowPlayingMoviesBloc,
+    required this.popularMoviesStream,
+    required this.nowPlayingMoviesStream,
+    required this.onPageInit,
     super.key,
   });
 
@@ -38,14 +40,14 @@ class _PopularState extends State<Popular> {
 
   static const double endHeight = 150;
 
-  @override
-  initState() {
-    super.initState();
-    widget.popularMoviesBloc.getMoviesByType(Endpoint.popular);
-    widget.nowPlayingMoviesBloc.getMoviesByType(Endpoint.nowPlaying);
-  }
 
   get selectedIndex => 0;
+
+  @override
+  void initState() {
+    widget.onPageInit();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,7 @@ class _PopularState extends State<Popular> {
       child: Column(
         children: <Widget>[
           StreamBuilder<Event<List<Movie>>>(
-            stream: widget.nowPlayingMoviesBloc.nowPlayingStream,
+            stream: widget.nowPlayingMoviesStream,
             builder: (
               BuildContext context,
               AsyncSnapshot<Event<List<Movie>>> snapshot,
@@ -82,7 +84,7 @@ class _PopularState extends State<Popular> {
             ),
           ),
           StreamBuilder<Event<List<Movie>>>(
-            stream: widget.popularMoviesBloc.popularStream,
+            stream: widget.popularMoviesStream,
             builder: (
               BuildContext context,
               AsyncSnapshot<Event<List<Movie>>> snapshot,

@@ -1,7 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
+
 import '../../../core/util/ui_consts.dart';
+import '../../../data/datasource/local/movie_database.dart';
+import '../../../data/datasource/remote/api_repository.dart';
+import '../../../data/repository/genre_repository.dart';
 import '../../../domain/entity/movie.dart';
+import '../../../domain/usecase/fetch_genres_usecase.dart';
+import '../../bloc/genres_bloc.dart';
 import '../shared/poster.dart';
 import 'movie_info.dart';
 
@@ -14,6 +22,7 @@ class MoviePresentation extends StatelessWidget {
   final Movie movie;
 
   static const double movieCardsContainerHeight = 0.5;
+  static const String asset = 'assets/error/default_backdrop.jpeg';
   static const double pad1 = 12.0;
   static const double posterPosition = 0;
   static const double posterWidth = 150.0;
@@ -28,13 +37,23 @@ class MoviePresentation extends StatelessWidget {
           Positioned(
             child: Hero(
               tag: movie.backdropName,
-              child: CachedNetworkImage(
-                imageUrl: movie.assetsBackdropPath,
-                placeholder: (BuildContext context, String url) => CircularProgressIndicator(),
-                errorWidget: (BuildContext context, String url, Object error) => Icon(Icons.error),
-                colorBlendMode: BlendMode.srcATop,
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.high,
+              child: AspectRatio(
+                aspectRatio: 16/10,
+                child: CachedNetworkImage(
+                  imageUrl: movie.assetsBackdropPath,
+                  placeholder: (BuildContext context, String url) => Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (
+                    BuildContext context,
+                    String url,
+                    Object error,
+                  ) =>
+                      Image.asset(asset),
+                  colorBlendMode: BlendMode.srcATop,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
+                ),
               ),
             ),
           ),
@@ -66,9 +85,26 @@ class MoviePresentation extends StatelessWidget {
                     posterWidth: posterWidth,
                   ),
                 ),
-                MovieInfo(
-                  padGenresCard: pad1,
-                  movie: movie,
+                Provider<GenresBloc>(
+                  create: (_) => GenresBloc(
+                    fetchGenresUseCase: FetchGenresUseCase(
+                      repository: GenreRepository(
+                        repository: APIRepository(client: Client()),
+                        database: Provider.of<MovieDatabase>(
+                          context,
+                          listen: false,
+                        ),
+                      ),
+                    ),
+                  ),
+                  builder: (BuildContext builderContext, _) => MovieInfo(
+                    padGenresCard: pad1,
+                    movie: movie,
+                    genreBloc: Provider.of<GenresBloc>(
+                      builderContext,
+                      listen: false,
+                    ),
+                  ),
                 ),
               ],
             ),

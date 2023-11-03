@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_card/src/config/route/app_routes.dart';
 import 'package:movie_card/src/domain/entity/movie.dart';
-import 'package:movie_card/src/presentation/bloc/movie_bloc.dart';
 import 'package:movie_card/src/presentation/widgets/menu/last_seen.dart';
 
 void main() {
@@ -24,7 +23,7 @@ void main() {
         MaterialApp(
           home: LastSeen(
             movie: movie,
-            movieBloc: MovieBloc(),
+           setLastMovie: (Movie movie ) {  },
           ),
         ),
       );
@@ -53,7 +52,7 @@ void main() {
           },
           home: LastSeen(
             movie: movie,
-            movieBloc: MovieBloc(),
+            setLastMovie: (Movie movie) {  },
           ),
         ),
       );

@@ -1,12 +1,13 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 import 'package:movie_card/src/core/util/data_state.dart';
 import 'package:movie_card/src/core/util/enums.dart';
 import 'package:movie_card/src/core/util/strings.dart';
-import 'package:movie_card/src/data/repository/api_repository.dart';
+import 'package:movie_card/src/data/datasource/remote/api_repository.dart';
 import 'package:movie_card/src/domain/entity/genre.dart';
 import 'package:movie_card/src/domain/entity/movie.dart';
-import 'package:test/test.dart';
+
 
 class MockClient extends Mock implements http.Client {}
 
@@ -40,7 +41,7 @@ void main() {
           );
 
           final DataState<List<Genre>> result =
-              await apiRepository.loadGenres(<int>[]);
+              await apiRepository.loadGenres();
 
           expect(result, isNotNull);
           expect(result.state, Status.success);
@@ -64,7 +65,7 @@ void main() {
           );
 
           final DataState<List<Genre>> result =
-              await apiRepository.loadGenres(<int>[]);
+              await apiRepository.loadGenres();
 
           expect(result, isNotNull);
           expect(result.state, Status.error);

@@ -1,37 +1,49 @@
 import 'dart:async';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../core/bloc/i_bloc.dart';
 import '../../core/usecase/i_usecase.dart';
 import '../../core/util/data_state.dart';
 import '../../core/util/enums.dart';
+import '../../core/util/strings.dart';
 import '../../domain/entity/event.dart';
 import '../../domain/entity/movie.dart';
-import '../../domain/usecase/now_playing_usecase.dart';
-import '../../domain/usecase/popular_movies_usecase.dart';
-import '../../domain/usecase/upcoming_usecase.dart';
 
 class MoviesBloc extends IBloc {
+  final StreamController<Event<Movie>> _movieStreamController =
+      StreamController<Event<Movie>>.broadcast();
   final StreamController<Event<List<Movie>>> popularStreamController =
       StreamController<Event<List<Movie>>>.broadcast();
   final StreamController<Event<List<Movie>>> nowPlayingStreamController =
-  StreamController<Event<List<Movie>>>.broadcast();
+      StreamController<Event<List<Movie>>>.broadcast();
   final StreamController<Event<List<Movie>>> upcomingStreamController =
       StreamController<Event<List<Movie>>>.broadcast();
 
-  final IUseCase<Future<DataState<List<Movie>>>, dynamic> _getPopularMovies;
-  final IUseCase<Future<DataState<List<Movie>>>, dynamic> _getNowPlayingMovies;
-  final IUseCase<Future<DataState<List<Movie>>>, dynamic> _getUpcomingMovies;
+  final IUseCase<Future<DataState<List<Movie>>>, Endpoint> getMoviesUseCase;
+  final IUseCase<Future<Movie>, int> fetchFirstMovie;
+
+  void getLastSeenMovie() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int? movieId = prefs.getInt(lastMoviePreference);
+    _movieStreamController.sink
+        .add(Event<Movie>.success(await fetchFirstMovie.call(movieId!)));
+  }
+
+  void setLastMovie(Movie movie) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(lastMoviePreference, movie.id);
+    _movieStreamController.sink.add(Event<Movie>.success(movie));
+  }
 
   MoviesBloc({
-    IUseCase<Future<DataState<List<Movie>>>, dynamic>? getPopularMovies,
-    IUseCase<Future<DataState<List<Movie>>>, dynamic>? getNowPlayingMovies,
-    IUseCase<Future<DataState<List<Movie>>>, dynamic>? getUpcomingMovies,
-  })  : _getPopularMovies = getPopularMovies ?? PopularMoviesUseCase(),
-        _getNowPlayingMovies = getNowPlayingMovies ?? NowPlayingUseCase(),
-        _getUpcomingMovies = getUpcomingMovies ?? UpcomingUseCase();
+    required this.fetchFirstMovie,
+    required this.getMoviesUseCase,
+  });
 
   @override
   void dispose() {
+    _movieStreamController.close();
     popularStreamController.close();
     nowPlayingStreamController.close();
     upcomingStreamController.close();
@@ -55,13 +67,16 @@ class MoviesBloc extends IBloc {
   Future<void> getMoviesByType(Endpoint endpoint) async {
     switch (endpoint) {
       case Endpoint.popular:
-        DataState<List<Movie>> movies = await _getPopularMovies.call();
+        DataState<List<Movie>> movies =
+            await getMoviesUseCase.call(Endpoint.popular);
         updateStream(popularStreamController, movies);
       case Endpoint.nowPlaying:
-        DataState<List<Movie>> movies = await _getNowPlayingMovies.call();
+        DataState<List<Movie>> movies =
+            await getMoviesUseCase.call(Endpoint.nowPlaying);
         updateStream(nowPlayingStreamController, movies);
       case Endpoint.upcoming:
-        DataState<List<Movie>> movies = await _getUpcomingMovies.call();
+        DataState<List<Movie>> movies =
+            await getMoviesUseCase.call(Endpoint.upcoming);
         updateStream(upcomingStreamController, movies);
     }
   }
@@ -74,6 +89,8 @@ class MoviesBloc extends IBloc {
 
   Stream<Event<List<Movie>>> get upcomingStream =>
       upcomingStreamController.stream;
+
+  Stream<Event<Movie>> get movieStream => _movieStreamController.stream;
 
   @override
   Future<void> initialize() async {
