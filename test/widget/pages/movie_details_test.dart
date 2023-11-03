@@ -14,12 +14,10 @@ import 'package:movie_card/src/presentation/widgets/loaders/cast_loader.dart';
 import 'package:movie_card/src/presentation/widgets/movie/cast_widget.dart';
 import 'package:movie_card/src/presentation/widgets/movie/movie_presentation.dart';
 
-
 class MockCastBloc extends Mock implements MovieDetailsBloc {
   @override
   final StreamController<Event<List<Cast>>> castStreamController =
-  StreamController<Event<List<Cast>>>.broadcast();
-
+      StreamController<Event<List<Cast>>>.broadcast();
 }
 
 final List<Cast> cast = CastModel.fromListOfJson({
@@ -63,11 +61,14 @@ void main() {
         MaterialApp(
           home: MovieDetails(
             movie: MovieModel.mockMovie(),
-            movieBloc: mockCastBloc, setLastMovie: (Movie movie) {  },
+            movieBloc: mockCastBloc,
+            setLastMovie: (Movie movie) {},
+            posterTag: '',
+            backdropTag: '',
           ),
         ),
       );
-      
+
       mockCastBloc.castStreamController.add(Event<List<Cast>>.loading());
       await tester.pump();
       expect(find.byType(MovieDetails), findsOneWidget);

@@ -85,6 +85,7 @@ void main() {
             nowPlayingMoviesStream: mockMoviesBloc.nowPlayingStream,
             popularMoviesStream: mockMoviesBloc.popularStream,
             onPageInit: () {},
+            setLastMovie: (Movie Movie) {},
           ),
         ),
       );
@@ -120,6 +121,7 @@ void main() {
             nowPlayingMoviesStream: mockMoviesBloc.nowPlayingStream,
             popularMoviesStream: mockMoviesBloc.popularStream,
             onPageInit: () {},
+            setLastMovie: (Movie Movie) {},
           ),
         ),
       );

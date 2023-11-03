@@ -52,7 +52,7 @@ class _GridCardState extends State<GridCard> {
                   arguments: MovieDetailsArguments(
                     movie: widget.movie,
                     setLastMovie: widget.setLastMovie,
-                    backdropTag: '6',
+                    backdropTag: '',
                     posterTag: widget.movie.posterName,
                   ),
                 );
