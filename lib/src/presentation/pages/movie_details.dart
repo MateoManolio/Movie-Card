@@ -21,6 +21,7 @@ class MovieDetails extends StatefulWidget {
   final MovieDetailsBloc movieBloc;
   final Function(Movie) setLastMovie;
 
+
   const MovieDetails({
     required this.movie,
     required this.movieBloc,

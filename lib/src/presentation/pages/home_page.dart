@@ -5,6 +5,7 @@ import 'popular.dart';
 import '../widgets/drawer/drawer.dart';
 import '../widgets/drawer/side_menu_elements.dart';
 import '../../core/util/ui_consts.dart';
+import '../../domain/entity/movie.dart';
 import '../bloc/movies_bloc.dart';
 import '../widgets/menu/exit_alert.dart';
 import '../widgets/menu/header.dart';
@@ -52,6 +53,7 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
           widget.bloc.getMoviesByType(Endpoint.popular);
           widget.bloc.getMoviesByType(Endpoint.nowPlaying);
         },
+        setLastMovie: (Movie movie) => widget.bloc.setLastMovie(movie),
       ),
     ];
     _pageController = PageController(initialPage: selectedIndex);

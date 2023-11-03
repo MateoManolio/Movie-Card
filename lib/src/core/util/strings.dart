@@ -8,6 +8,10 @@ const String lastMoviePreference = 'movieId';
 
 const String messageMovieError = "Failed to load movies";
 
+const String heroMenuPath = '/menu';
+
+const String heroPopularPath = '/popular';
+
 // API
 const String imageUri = 'https://image.tmdb.org/t/p/w500';
 

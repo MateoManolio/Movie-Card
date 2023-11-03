@@ -24,11 +24,14 @@ abstract class AppRoutes {
             .arguments! as MovieDetailsArguments;
         return Provider<MovieDetailsBloc>(
           create: (_) => MovieDetailsBloc(
-            loadCastUseCase: LoadCastUseCase(repository: CastRepository(repository: APIRepository(client: Client()),
-              database: Provider.of<MovieDatabase>(
-                context,
-                listen: false,
-              ),),
+            loadCastUseCase: LoadCastUseCase(
+              repository: CastRepository(
+                repository: APIRepository(client: Client()),
+                database: Provider.of<MovieDatabase>(
+                  context,
+                  listen: false,
+                ),
+              ),
             ),
           ),
           builder: (BuildContext builderContext, _) {
