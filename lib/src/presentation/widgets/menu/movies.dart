@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../navigation/movie_details_args.dart';
 import '../../../config/route/app_routes.dart';
 import '../../../core/util/ui_consts.dart';
 import '../../../domain/entity/movie.dart';
+import '../../navigation/movie_details_args.dart';
 import '../shared/custom_card.dart';
 import 'movie_details.dart';
 
@@ -11,10 +11,12 @@ class Movies extends StatelessWidget {
   const Movies({
     required this.movies,
     required this.setLastMovie,
+    required this.updateMovie,
     super.key,
   });
 
   final Function(Movie) setLastMovie;
+  final Function(Movie) updateMovie;
   final List<Movie> movies;
 
   static const String title = "Movies";
@@ -53,7 +55,10 @@ class Movies extends StatelessWidget {
                   Routes.movieDetailsRouteName,
                   arguments: MovieDetailsArguments(
                     movie: movies[index],
-                    setLastMovie: setLastMovie, backdropTag: '', posterTag: movies[index].posterName,
+                    setLastMovie: setLastMovie,
+                    backdropTag: '',
+                    posterTag: movies[index].posterName,
+                    updateMovie: updateMovie,
                   ),
                 );
               },

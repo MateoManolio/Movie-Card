@@ -28,14 +28,19 @@ class MovieRepository {
         );
       }
     }
+
     return DataSuccess<List<Movie>>(
       data: await database.movieDao.findMovieByType(endpoint),
     );
   }
 
-Future<Movie> getMovieById(int? movieId) async {
-  return await database.movieDao.findMovieById(movieId!) ?? MovieModel.mockMovie();
+Future<Movie> getMovieById(int movieId) async {
+  return await database.movieDao.findMovieById(movieId) ?? MovieModel.mockMovie();
 }
 
+
+void updateMovie(Movie movie) {
+    database.movieDao.updateMovie(movie);
+}
 
 }

@@ -11,6 +11,7 @@ import '../shared/cache_image.dart';
 class Carrousel extends StatefulWidget {
   final List<Movie> movies;
   final Function(Movie) setLastMovie;
+  final Function(Movie) updateMovie;
   late Timer _timer;
 
   Timer get getTimer => _timer;
@@ -18,6 +19,7 @@ class Carrousel extends StatefulWidget {
   Carrousel({
     required this.movies,
     required this.setLastMovie,
+    required this.updateMovie,
     super.key,
   });
 
@@ -47,7 +49,6 @@ class _CarrouselState extends State<Carrousel> {
     return Timer.periodic(
       Duration(seconds: switchDuration),
       (Timer timer) {
-        debugPrint("Tick");
         _currentPage < numberOfElements ? _currentPage++ : _currentPage = 0;
         _pageController.animateToPage(
           _currentPage,
@@ -91,15 +92,16 @@ class _CarrouselState extends State<Carrousel> {
             ) {
               return InkWell(
                 onTap: () {
-                widget._timer.cancel();
+                  widget._timer.cancel();
                   Navigator.pushNamed(
                     context,
                     Routes.movieDetailsRouteName,
                     arguments: MovieDetailsArguments(
                       movie: widget.movies[_currentPage],
                       setLastMovie: widget.setLastMovie,
-                      backdropTag: '4',
-                      posterTag: '3',
+                      backdropTag: '',
+                      posterTag: '',
+                      updateMovie: widget.updateMovie,
                     ),
                   );
                 },

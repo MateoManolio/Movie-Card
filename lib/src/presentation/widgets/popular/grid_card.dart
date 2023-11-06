@@ -10,9 +10,11 @@ import '../shared/custom_card.dart';
 class GridCard extends StatefulWidget {
   final Movie movie;
   final Function(Movie) setLastMovie;
+  final Function(Movie) updateMovie;
 
   const GridCard({
     required this.setLastMovie,
+    required this.updateMovie,
     required this.movie,
     super.key,
   });
@@ -22,9 +24,6 @@ class GridCard extends StatefulWidget {
 }
 
 class _GridCardState extends State<GridCard> {
-  late bool isLiked;
-  late bool isSaved;
-
   static const double posterRadius = 8;
   static const double spacePosterButtons = 9.5;
   static const double avatarColorOpacity = 0.5;
@@ -32,8 +31,6 @@ class _GridCardState extends State<GridCard> {
 
   @override
   void initState() {
-    isLiked = widget.movie.liked;
-    isSaved = widget.movie.saved;
     super.initState();
   }
 
@@ -54,6 +51,7 @@ class _GridCardState extends State<GridCard> {
                     setLastMovie: widget.setLastMovie,
                     backdropTag: '',
                     posterTag: widget.movie.posterName,
+                    updateMovie: widget.updateMovie,
                   ),
                 );
               },
@@ -80,10 +78,17 @@ class _GridCardState extends State<GridCard> {
                   backgroundColor:
                       colors.secondary.withOpacity(avatarColorOpacity),
                   child: IconButton(
-                    onPressed: () => setState(() => isLiked = !isLiked),
+                    onPressed: () => setState(() {
+                      widget.movie.toggleLiked();
+                      widget.updateMovie(widget.movie);
+                    }),
                     icon: Icon(
-                      isLiked ? Icons.favorite : Icons.favorite_border_rounded,
-                      color: isLiked ? Colors.redAccent : Colors.white70,
+                      widget.movie.liked
+                          ? Icons.favorite
+                          : Icons.favorite_border_rounded,
+                      color: widget.movie.liked
+                          ? Colors.redAccent
+                          : Colors.white70,
                     ),
                   ),
                 ),
@@ -91,10 +96,17 @@ class _GridCardState extends State<GridCard> {
                   backgroundColor:
                       colors.secondary.withOpacity(avatarColorOpacity),
                   child: IconButton(
-                    onPressed: () => setState(() => isSaved = !isSaved),
+                    onPressed: () => setState(() {
+                      widget.movie.toggleSaved();
+                      widget.updateMovie(widget.movie);
+                    }),
                     icon: Icon(
-                      isSaved ? Icons.bookmark : Icons.bookmark_border,
-                      color: isSaved ? Colors.lightBlueAccent : Colors.white70,
+                      widget.movie.saved
+                          ? Icons.bookmark
+                          : Icons.bookmark_border,
+                      color: widget.movie.saved
+                          ? Colors.lightBlueAccent
+                          : Colors.white70,
                     ),
                   ),
                 ),

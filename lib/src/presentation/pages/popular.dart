@@ -4,6 +4,7 @@ import '../../core/util/enums.dart';
 import '../../core/util/ui_consts.dart';
 import '../../domain/entity/event.dart';
 import '../../domain/entity/movie.dart';
+import '../bloc/movies_bloc.dart';
 import '../widgets/loaders/grid_view_loader.dart';
 import '../widgets/loaders/last_seen_loader.dart';
 import '../widgets/popular/carrousel.dart';
@@ -11,16 +12,10 @@ import '../widgets/popular/grid_card.dart';
 import '../widgets/shared/error_class.dart';
 
 class Popular extends StatefulWidget {
-  final Stream<Event<List<Movie>>> popularMoviesStream;
-  final Stream<Event<List<Movie>>> nowPlayingMoviesStream;
-  final Function() onPageInit;
-  final Function(Movie) setLastMovie;
+  final MoviesBloc moviesBloc;
 
   const Popular({
-    required this.popularMoviesStream,
-    required this.nowPlayingMoviesStream,
-    required this.onPageInit,
-    required this.setLastMovie,
+    required this.moviesBloc,
     super.key,
   });
 
@@ -45,7 +40,8 @@ class _PopularState extends State<Popular> {
 
   @override
   void initState() {
-    widget.onPageInit();
+    widget.moviesBloc.getMoviesByType(Endpoint.popular);
+    widget.moviesBloc.getMoviesByType(Endpoint.nowPlaying);
     super.initState();
   }
 
@@ -55,7 +51,7 @@ class _PopularState extends State<Popular> {
       child: Column(
         children: <Widget>[
           StreamBuilder<Event<List<Movie>>>(
-            stream: widget.nowPlayingMoviesStream,
+            stream: widget.moviesBloc.nowPlayingStream,
             builder: (
               BuildContext context,
               AsyncSnapshot<Event<List<Movie>>> snapshot,
@@ -68,7 +64,9 @@ class _PopularState extends State<Popular> {
                 case Status.success:
                   return Carrousel(
                     movies: snapshot.data!.data!,
-                    setLastMovie: widget.setLastMovie,
+                    setLastMovie: widget.moviesBloc.setLastMovie,
+                    updateMovie: (Movie movie) =>
+                        widget.moviesBloc.updateMovie(movie),
                   );
                 case Status.error:
                   return CustomError(
@@ -87,7 +85,7 @@ class _PopularState extends State<Popular> {
             ),
           ),
           StreamBuilder<Event<List<Movie>>>(
-            stream: widget.popularMoviesStream,
+            stream: widget.moviesBloc.popularStream,
             builder: (
               BuildContext context,
               AsyncSnapshot<Event<List<Movie>>> snapshot,
@@ -119,7 +117,9 @@ class _PopularState extends State<Popular> {
                       ) {
                         return GridCard(
                           movie: snapshot.data!.data![index],
-                          setLastMovie: widget.setLastMovie,
+                          setLastMovie: widget.moviesBloc.setLastMovie,
+                          updateMovie: (Movie movie) =>
+                              widget.moviesBloc.updateMovie(movie),
                         );
                       },
                     ),

@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/repository/movies_repository.dart';
 import '../../data/datasource/local/movie_database.dart';
 import '../../data/datasource/remote/api_repository.dart';
 import '../../data/repository/cast_repository.dart';
+import '../../data/repository/movies_repository.dart';
 import '../../domain/usecase/fetch_last_seen_movie_usecase.dart';
 import '../../domain/usecase/load_cast_usecase.dart';
 import '../../domain/usecase/movies_by_type_usecase.dart';
+import '../../domain/usecase/update_movie_usecase.dart';
 import '../../presentation/bloc/movie_details_bloc.dart';
 import '../../presentation/bloc/movies_bloc.dart';
 import '../../presentation/navigation/movie_details_args.dart';
@@ -44,6 +45,7 @@ abstract class AppRoutes {
               setLastMovie: arguments.setLastMovie,
               posterTag: arguments.posterTag,
               backdropTag: arguments.backdropTag,
+              updateMovie: arguments.updateMovie,
             );
           },
         );
@@ -60,6 +62,15 @@ abstract class AppRoutes {
                 ),
               ),
               fetchFirstMovie: FetchLastSeenMovieUseCase(
+                repository: MovieRepository(
+                  repository: APIRepository(client: Client()),
+                  database: Provider.of<MovieDatabase>(
+                    builderContext,
+                    listen: false,
+                  ),
+                ),
+              ),
+              updateMovieUseCase: UpdateMovieUseCase(
                 repository: MovieRepository(
                   repository: APIRepository(client: Client()),
                   database: Provider.of<MovieDatabase>(

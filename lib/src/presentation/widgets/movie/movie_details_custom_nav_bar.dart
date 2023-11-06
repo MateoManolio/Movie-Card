@@ -6,9 +6,11 @@ import '../../../domain/entity/movie.dart';
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({
     required this.movie,
+    required this.updateMovie,
     super.key,
   });
 
+  final Function(Movie) updateMovie;
   final Movie movie;
 
   @override
@@ -47,6 +49,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
             onTap: () {
               setState(() {
                 widget.movie.toggleLiked();
+                widget.updateMovie(widget.movie);
               });
             },
             child: Row(
@@ -70,6 +73,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               setState(
                 () {
                   widget.movie.toggleSaved();
+                  widget.updateMovie(widget.movie);
                 },
               );
             },

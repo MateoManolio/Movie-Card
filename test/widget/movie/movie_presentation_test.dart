@@ -21,7 +21,11 @@ void main() {
       await widgetTester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: MoviePresentation(movie: movie, posterTag: '', backdropTag: '',),
+            body: MoviePresentation(
+              movie: movie,
+              posterTag: '',
+              backdropTag: '',
+            ),
           ),
         ),
       );
@@ -36,7 +40,11 @@ void main() {
       await widgetTester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: MoviePresentation(movie: movie, posterTag: '', backdropTag: '',),
+            body: MoviePresentation(
+              movie: movie,
+              posterTag: '',
+              backdropTag: '',
+            ),
           ),
         ),
       );

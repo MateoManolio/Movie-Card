@@ -20,6 +20,7 @@ class MovieDetails extends StatefulWidget {
   final Movie movie;
   final MovieDetailsBloc movieBloc;
   final Function(Movie) setLastMovie;
+  final Function(Movie) updateMovie;
   final String posterTag;
   final String backdropTag;
 
@@ -29,6 +30,7 @@ class MovieDetails extends StatefulWidget {
     required this.setLastMovie,
     required this.posterTag,
     required this.backdropTag,
+    required this.updateMovie,
     super.key,
   });
 
@@ -88,7 +90,7 @@ class _MovieDetailsState extends State<MovieDetails> {
         ),
       ),
       floatingActionButton: CustomNavigationBar(
-        movie: widget.movie,
+        movie: widget.movie, updateMovie: widget.updateMovie,
       ),
     );
   }

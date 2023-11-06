@@ -47,13 +47,7 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
         moviesBloc: widget.bloc,
       ),
       Popular(
-        popularMoviesStream: widget.bloc.popularStream,
-        nowPlayingMoviesStream: widget.bloc.nowPlayingStream,
-        onPageInit: () {
-          widget.bloc.getMoviesByType(Endpoint.popular);
-          widget.bloc.getMoviesByType(Endpoint.nowPlaying);
-        },
-        setLastMovie: (Movie movie) => widget.bloc.setLastMovie(movie),
+        moviesBloc: widget.bloc,
       ),
     ];
     _pageController = PageController(initialPage: selectedIndex);
