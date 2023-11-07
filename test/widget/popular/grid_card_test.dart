@@ -21,7 +21,11 @@ void main() {
       await widgetTester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: GridCard(movie: movie, setLastMovie: (Movie ) {  },),
+            body: GridCard(
+              movie: movie,
+              setLastMovie: (Movie movie) {},
+              updateMovie: (Movie movie) {},
+            ),
           ),
         ),
       );
@@ -40,7 +44,11 @@ void main() {
           await widgetTester.pumpWidget(
             MaterialApp(
               home: Scaffold(
-                body: GridCard(movie: movie, setLastMovie: (Movie ) {  },),
+                body: GridCard(
+                  movie: movie,
+                  setLastMovie: (Movie movie) {},
+                  updateMovie: (Movie movie) {},
+                ),
               ),
             ),
           );
@@ -58,7 +66,11 @@ void main() {
           await widgetTester.pumpWidget(
             MaterialApp(
               home: Scaffold(
-                body: GridCard(movie: movie, setLastMovie: (Movie ) {  },),
+                body: GridCard(
+                  movie: movie,
+                  setLastMovie: (Movie movie) {},
+                  updateMovie: (Movie movie) {},
+                ),
               ),
             ),
           );

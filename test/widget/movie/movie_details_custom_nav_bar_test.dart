@@ -20,7 +20,10 @@ void main() {
     (WidgetTester widgetTester) async {
       await widgetTester.pumpWidget(
         MaterialApp(
-          home: CustomNavigationBar(movie: movie),
+          home: CustomNavigationBar(
+            movie: movie,
+            updateMovie: (Movie movie) {},
+          ),
         ),
       );
 
@@ -34,7 +37,10 @@ void main() {
       movie.toggleLiked();
       await widgetTester.pumpWidget(
         MaterialApp(
-          home: CustomNavigationBar(movie: movie),
+          home: CustomNavigationBar(
+            movie: movie,
+            updateMovie: (Movie movie) {},
+          ),
         ),
       );
 
@@ -53,7 +59,10 @@ void main() {
     (WidgetTester widgetTester) async {
       await widgetTester.pumpWidget(
         MaterialApp(
-          home: CustomNavigationBar(movie: movie),
+          home: CustomNavigationBar(
+            movie: movie,
+            updateMovie: (Movie movie) {},
+          ),
         ),
       );
 

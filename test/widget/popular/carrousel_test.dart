@@ -60,8 +60,10 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Carrousel(
-            movies: List.generate(10, (index) => MovieModel.mockMovie()),
-            setLastMovie: (Movie) {},
+            movies:
+                List<Movie>.generate(10, (int index) => MovieModel.mockMovie()),
+            setLastMovie: (Movie movie) {},
+            updateMovie: (Movie movie) {},
           ),
         ),
       );
@@ -76,8 +78,9 @@ void main() {
       final MockMoviesBlocSuccess mockMoviesBloc = MockMoviesBlocSuccess();
 
       final Carrousel mockCarrousel = Carrousel(
-        movies: List.generate(10, (index) => MovieModel.mockMovie()),
-        setLastMovie: (Movie) {},
+        movies: List<Movie>.generate(10, (int index) => MovieModel.mockMovie()),
+        setLastMovie: (Movie Movie) {},
+        updateMovie: (Movie movie) {},
       );
 
       await tester.pumpWidget(
@@ -99,8 +102,10 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Carrousel(
-            movies: List.generate(10, (index) => MovieModel.mockMovie()),
-            setLastMovie: (Movie) {},
+            movies:
+                List<Movie>.generate(10, (int index) => MovieModel.mockMovie()),
+            setLastMovie: (Movie Movie) {},
+            updateMovie: (Movie movie) {},
           ),
         ),
       );

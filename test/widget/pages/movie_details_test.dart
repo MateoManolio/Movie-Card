@@ -65,6 +65,7 @@ void main() {
             setLastMovie: (Movie movie) {},
             posterTag: '',
             backdropTag: '',
+            updateMovie: (Movie movie) {},
           ),
         ),
       );

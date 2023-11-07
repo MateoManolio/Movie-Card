@@ -25,12 +25,12 @@ abstract class MovieDao {
   Future<void> updateMovie(Movie movie);
 
   Future<void> insertNewMovie(Movie movie, Endpoint endpoint) async {
-    await insertMovie(movie);
     await insertMovieCategory(
       MovieCategory(
         category: endpoint,
         movieId: movie.id,
       ),
     );
+    await insertMovie(movie);
   }
 }

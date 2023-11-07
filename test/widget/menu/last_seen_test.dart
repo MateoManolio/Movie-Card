@@ -23,7 +23,8 @@ void main() {
         MaterialApp(
           home: LastSeen(
             movie: movie,
-           setLastMovie: (Movie movie ) {  },
+            setLastMovie: (Movie movie) {},
+            updateMovie: (Movie movie) {},
           ),
         ),
       );
@@ -52,7 +53,8 @@ void main() {
           },
           home: LastSeen(
             movie: movie,
-            setLastMovie: (Movie movie) {  },
+            setLastMovie: (Movie movie) {},
+            updateMovie: (Movie movie) {},
           ),
         ),
       );
