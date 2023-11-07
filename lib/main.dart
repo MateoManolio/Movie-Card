@@ -1,4 +1,5 @@
 
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' show Client;
 
 import 'package:flutter/material.dart';
@@ -16,6 +17,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final MovieDatabase database =
       await $FloorMovieDatabase.databaseBuilder(databaseName).build();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+      AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
   runApp(
     MultiProvider(
       providers: <SingleChildWidget>[

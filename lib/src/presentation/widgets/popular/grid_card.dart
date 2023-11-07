@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../config/route/app_routes.dart';
+import '../../../core/util/notification_service.dart';
 import '../../../core/util/ui_consts.dart';
 import '../../../domain/entity/movie.dart';
 import '../../navigation/movie_details_args.dart';
@@ -28,9 +29,12 @@ class _GridCardState extends State<GridCard> {
   static const double spacePosterButtons = 9.5;
   static const double avatarColorOpacity = 0.5;
   static const double padding = 5;
+  late final NotificationService notificationService;
 
   @override
   void initState() {
+    notificationService = NotificationService();
+    notificationService.initializePlatformNotifications();
     super.initState();
   }
 
@@ -99,6 +103,13 @@ class _GridCardState extends State<GridCard> {
                     onPressed: () => setState(() {
                       widget.movie.toggleSaved();
                       widget.updateMovie(widget.movie);
+                      if(widget.movie.saved){
+                        notificationService.showLocalNotification(
+                          id: 0,
+                          title: 'Movie Saved',
+                          body: '${widget.movie.title} was saved!',
+                        );
+                      }
                     }),
                     icon: Icon(
                       widget.movie.saved
