@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:movie_card/src/presentation/widgets/shared/cache_image.dart';
+import 'package:movie_card/src/presentation/widgets/shared/custom_card.dart';
 
 import '../../core/util/enums.dart';
 import '../../core/util/ui_consts.dart';
@@ -8,7 +10,7 @@ import '../bloc/movies_bloc.dart';
 import '../widgets/loaders/grid_view_loader.dart';
 import '../widgets/loaders/last_seen_loader.dart';
 import '../widgets/popular/carrousel.dart';
-import '../widgets/popular/grid_card.dart';
+import '../widgets/saved/grid_card.dart';
 import '../widgets/shared/error_class.dart';
 
 class Popular extends StatefulWidget {
@@ -35,6 +37,8 @@ class _PopularState extends State<Popular> {
   static const int gridViewLoaderListSize = 4;
 
   static const double endHeight = 150;
+  static const double customCardPadding = 2;
+  static const double cardRadius = 10;
 
   get selectedIndex => 0;
 
@@ -115,6 +119,16 @@ class _PopularState extends State<Popular> {
                         BuildContext context,
                         int index,
                       ) {
+                        return CustomCard(
+                          padding: customCardPadding,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(cardRadius),
+                            child: CacheImage(
+                              url: snapshot.data!.data![index].assetsPosterPath,
+                            ),
+                          ),
+                        );
+                        //TODO: Remove this if it works
                         return GridCard(
                           movie: snapshot.data!.data![index],
                           setLastMovie: widget.moviesBloc.setLastMovie,

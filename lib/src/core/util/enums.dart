@@ -10,3 +10,8 @@ enum Endpoint {
   nowPlaying,
   upcoming,
 }
+
+enum Option {
+  saved,
+  liked,
+}

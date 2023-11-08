@@ -273,6 +273,38 @@ class _$MovieDao extends MovieDao {
   }
 
   @override
+  Future<List<Movie>> findSavedMovies() async {
+    return _queryAdapter.queryList('SELECT * FROM Movie WHERE saved = true',
+        mapper: (Map<String, Object?> row) => Movie(
+            id: row['id'] as int,
+            title: row['title'] as String,
+            posterName: row['posterName'] as String,
+            backdropName: row['backdropName'] as String,
+            releaseDate: row['releaseDate'] as String,
+            score: row['score'] as double,
+            genres: _genresListConverter.decode(row['genres'] as String),
+            overview: row['overview'] as String,
+            saved: (row['saved'] as int) != 0,
+            liked: (row['liked'] as int) != 0));
+  }
+
+  @override
+  Future<List<Movie>> findLikedMovies() async {
+    return _queryAdapter.queryList('SELECT * FROM Movie WHERE liked = true',
+        mapper: (Map<String, Object?> row) => Movie(
+            id: row['id'] as int,
+            title: row['title'] as String,
+            posterName: row['posterName'] as String,
+            backdropName: row['backdropName'] as String,
+            releaseDate: row['releaseDate'] as String,
+            score: row['score'] as double,
+            genres: _genresListConverter.decode(row['genres'] as String),
+            overview: row['overview'] as String,
+            saved: (row['saved'] as int) != 0,
+            liked: (row['liked'] as int) != 0));
+  }
+
+  @override
   Future<void> insertMovie(Movie movie) async {
     await _movieInsertionAdapter.insert(movie, OnConflictStrategy.abort);
   }

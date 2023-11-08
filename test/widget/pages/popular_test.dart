@@ -10,7 +10,7 @@ import 'package:movie_card/src/domain/entity/movie.dart';
 import 'package:movie_card/src/presentation/bloc/movies_bloc.dart';
 import 'package:movie_card/src/presentation/pages/popular.dart';
 import 'package:movie_card/src/presentation/widgets/loaders/grid_view_loader.dart';
-import 'package:movie_card/src/presentation/widgets/popular/grid_card.dart';
+import 'package:movie_card/src/presentation/widgets/saved/grid_card.dart';
 import 'package:movie_card/src/presentation/widgets/shared/error_class.dart';
 
 class MockMoviesBlocSuccess extends Mock implements MoviesBloc {

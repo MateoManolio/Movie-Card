@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:movie_card/src/presentation/pages/saved_movies.dart';
+import 'package:provider/provider.dart';
 
-import '../../core/util/enums.dart';
-import 'popular.dart';
-import '../widgets/drawer/drawer.dart';
-import '../widgets/drawer/side_menu_elements.dart';
 import '../../core/util/ui_consts.dart';
 import '../../domain/entity/movie.dart';
 import '../bloc/movies_bloc.dart';
+import '../bloc/saved_bloc.dart';
+import '../widgets/drawer/drawer.dart';
+import '../widgets/drawer/side_menu_elements.dart';
 import '../widgets/menu/exit_alert.dart';
 import '../widgets/menu/header.dart';
 import '../widgets/menu/menu_custom_navbar.dart';
 import 'movie_menu.dart';
+import 'popular.dart';
 
 class HomePage extends StatefulWidget {
   final MoviesBloc bloc;
@@ -48,6 +50,14 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
       ),
       Popular(
         moviesBloc: widget.bloc,
+      ),
+      SavedMovies(
+        bloc: Provider.of<SavedMoviesBloc>(
+          context,
+          listen: false,
+        ),
+        setLastMovie: (Movie movie) => widget.bloc.setLastMovie(movie),
+        updateMovie: (Movie movie) => widget.bloc.updateMovie(movie),
       ),
     ];
     _pageController = PageController(initialPage: selectedIndex);

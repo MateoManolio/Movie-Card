@@ -26,9 +26,9 @@ class GridCard extends StatefulWidget {
 
 class _GridCardState extends State<GridCard> {
   static const double posterRadius = 8;
-  static const double spacePosterButtons = 9.5;
+  static const double spacePosterButtons = 4;
   static const double avatarColorOpacity = 0.5;
-  static const double padding = 5;
+  static const double padding = 7;
   late final NotificationService notificationService;
 
   @override
@@ -78,46 +78,43 @@ class _GridCardState extends State<GridCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                CircleAvatar(
-                  backgroundColor:
-                      colors.secondary.withOpacity(avatarColorOpacity),
-                  child: IconButton(
-                    onPressed: () => setState(() {
-                      widget.movie.toggleLiked();
-                      widget.updateMovie(widget.movie);
-                    }),
-                    icon: Icon(
+                InkWell(
+                  onTap: () => setState(() {
+                    widget.movie.toggleLiked();
+                    widget.updateMovie(widget.movie);
+                  }),
+                  child: CircleAvatar(
+                    radius: 15,
+                    backgroundColor:
+                        colors.secondary.withOpacity(avatarColorOpacity),
+                    child: Icon(
                       widget.movie.liked
                           ? Icons.favorite
                           : Icons.favorite_border_rounded,
                       color: widget.movie.liked
                           ? Colors.redAccent
                           : Colors.white70,
+                      size: 20,
                     ),
                   ),
                 ),
-                CircleAvatar(
-                  backgroundColor:
-                      colors.secondary.withOpacity(avatarColorOpacity),
-                  child: IconButton(
-                    onPressed: () => setState(() {
-                      widget.movie.toggleSaved();
-                      widget.updateMovie(widget.movie);
-                      if(widget.movie.saved){
-                        notificationService.showLocalNotification(
-                          id: 0,
-                          title: 'Movie Saved',
-                          body: '${widget.movie.title} was saved!',
-                        );
-                      }
-                    }),
-                    icon: Icon(
+                InkWell(
+                  onTap: () => setState(() {
+                    widget.movie.toggleSaved();
+                    widget.updateMovie(widget.movie);
+                  }),
+                  child: CircleAvatar(
+                    radius: 15,
+                    backgroundColor:
+                        colors.secondary.withOpacity(avatarColorOpacity),
+                    child: Icon(
                       widget.movie.saved
                           ? Icons.bookmark
                           : Icons.bookmark_border,
                       color: widget.movie.saved
                           ? Colors.lightBlueAccent
                           : Colors.white70,
+                      size: 20,
                     ),
                   ),
                 ),

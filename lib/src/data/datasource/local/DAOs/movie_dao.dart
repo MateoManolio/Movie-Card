@@ -15,6 +15,12 @@ abstract class MovieDao {
   @Query('SELECT * FROM Movie m WHERE EXISTS( SELECT 1 FROM MovieCategory c WHERE m.id = c.movieId AND c.category = :type )')
   Future<List<Movie>> findMovieByType(Endpoint type);
 
+  @Query('SELECT * FROM Movie WHERE saved = true')
+  Future<List<Movie>> findSavedMovies();
+
+  @Query('SELECT * FROM Movie WHERE liked = true')
+  Future<List<Movie>> findLikedMovies();
+
   @insert
   Future<void> insertMovie(Movie movie);
 
