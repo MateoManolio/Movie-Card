@@ -1,4 +1,3 @@
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' show Client;
 
@@ -11,16 +10,17 @@ import 'src/config/theme/app_themes.dart';
 import 'src/core/util/strings.dart';
 import 'src/data/datasource/local/movie_database.dart';
 
-
 void main() async {
   const String databaseName = 'movie_database.db1';
   WidgetsFlutterBinding.ensureInitialized();
   final MovieDatabase database =
       await $FloorMovieDatabase.databaseBuilder(databaseName).build();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
-  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+      FlutterLocalNotificationsPlugin();
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.requestNotificationsPermission();
   runApp(
     MultiProvider(
       providers: <SingleChildWidget>[

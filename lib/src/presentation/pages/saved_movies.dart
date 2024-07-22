@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:movie_card/src/presentation/widgets/saved/empty_text.dart';
 
 import '../../core/util/enums.dart';
 import '../../core/util/ui_consts.dart';
@@ -36,97 +37,104 @@ class _SavedMoviesState extends State<SavedMovies> {
   static const double gridPadding = 12;
   static const String errorMessageSaved = 'Error to bring the movies';
 
-  void initialization() async {
-    option = await widget.bloc.option;
+  @override
+  void initState() {
+    super.initState();
+    _initialization();
+  }
+
+  Future<void> _initialization([Option? option]) async {
+    if (option == null) {
+      option = await widget.bloc.option;
+    }
     switch (option) {
       case Option.saved:
-        unawaited(widget.bloc.getSavedMovies());
+        await widget.bloc.getSavedMovies();
       case Option.liked:
-        unawaited(widget.bloc.getLikedMovies());
+        await widget.bloc.getLikedMovies();
     }
     setState(() {});
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    initialization();
     return SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              const SizedBox(
-                height: SavedMovies.initSeparation,
-              ),
-              SwitchButton(
-                option: option,
-                newOptionSelected: (Option option) {
-                  setState(() {
-                    widget.bloc.setOption(option);
-                  });
-                },
-              ),
-              const SizedBox(
-                height: SavedMovies.initSeparation,
-              ),
-              StreamBuilder<Event<List<Movie>>>(
-                stream: widget.bloc.stream,
-                builder: (
-                  BuildContext context,
-                  AsyncSnapshot<Event<List<Movie>>> snapshot,
-                ) {
-                  switch (snapshot.data?.state) {
-                    case null:
-                    case Status.loading:
-                      return GridViewLoader(
-                        gridCrossAxisCount: SavedMovies.gridCrossAxisCount,
-                        length: gridViewLoaderListSize,
-                      );
-                    case Status.empty:
-                    case Status.success:
-                      return Padding(
-                        padding: const EdgeInsets.all(gridPadding),
-                        child: GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: SavedMovies.gridCrossAxisCount,
-                            mainAxisSpacing: gridAxisSpacing,
-                            crossAxisSpacing: gridAxisSpacing,
-                            childAspectRatio: gridAspectRatio,
-                          ),
-                          shrinkWrap: true,
-                          itemCount: snapshot.data!.data!.length,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (
-                            BuildContext context,
-                            int index,
-                          ) {
-                            return GridCard(
-                              movie: snapshot.data!.data![index],
-                              setLastMovie: widget.setLastMovie,
-                              updateMovie: (Movie movie) {
-                                setState(() {
-                                  widget.updateMovie(movie);
-                                });
-                              },
-                            );
-                          },
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            const SizedBox(
+              height: SavedMovies.initSeparation,
+            ),
+            SwitchButton(
+              option: option,
+              newOptionSelected: (Option newOption) {
+                setState(() {
+                  option = newOption;
+                  _initialization(newOption);
+                  widget.bloc.setOption(newOption);
+                });
+              },
+            ),
+            const SizedBox(
+              height: SavedMovies.initSeparation,
+            ),
+            StreamBuilder<Event<List<Movie>>>(
+              stream: widget.bloc.stream,
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<Event<List<Movie>>> snapshot,
+              ) {
+                switch (snapshot.data?.state) {
+                  case null:
+                  case Status.loading:
+                    return GridViewLoader(
+                      gridCrossAxisCount: SavedMovies.gridCrossAxisCount,
+                      length: gridViewLoaderListSize,
+                    );
+                  case Status.empty:
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 25),
+                      child: EmptyText(option: option),
+                    );
+                  case Status.success:
+                    return Padding(
+                      padding: const EdgeInsets.all(gridPadding),
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: SavedMovies.gridCrossAxisCount,
+                          mainAxisSpacing: gridAxisSpacing,
+                          crossAxisSpacing: gridAxisSpacing,
+                          childAspectRatio: gridAspectRatio,
                         ),
-                      );
-                    case Status.error:
-                      return CustomError(
-                        message: errorMessageSaved,
-                      );
-                  }
-                },
-              ),
-            ],
-          ),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.data!.length,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (
+                          BuildContext context,
+                          int index,
+                        ) {
+                          return GridCard(
+                            movie: snapshot.data!.data![index],
+                            setLastMovie: widget.setLastMovie,
+                            updateMovie: (Movie movie) {
+                              setState(() {
+                                widget.updateMovie(movie);
+                              });
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  case Status.error:
+                    return CustomError(
+                      message: errorMessageSaved,
+                    );
+                }
+              },
+            ),
+          ],
         ),
+      ),
     );
   }
 }
