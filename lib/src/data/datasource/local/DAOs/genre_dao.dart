@@ -14,10 +14,10 @@ abstract class GenreDao {
   )
   Future<List<Genre>> getGenreByMovie(int movieId);
 
-  @Insert(onConflict: OnConflictStrategy.ignore)
+  @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertGenre(Genre genre);
 
-  @Insert(onConflict: OnConflictStrategy.ignore)
+  @insert
   Future<void> insertMovieGenre(MovieGenre movieGenre);
 
   @Update(onConflict: OnConflictStrategy.replace)

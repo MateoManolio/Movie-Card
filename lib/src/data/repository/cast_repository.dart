@@ -20,6 +20,7 @@ class CastRepository {
       final DataState<List<Cast>> apiResponse =
           await repository.loadCast(movieId);
       if (apiResponse.state == Status.success) {
+
         await database.castDao.insertCast(apiResponse.data!);
       }
     }

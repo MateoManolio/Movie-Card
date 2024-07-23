@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_card/src/domain/entity/movie.dart';
-import 'package:movie_card/src/presentation/widgets/popular/grid_card.dart';
+import 'package:movie_card/src/presentation/widgets/saved/grid_card.dart';
 
 void main() {
   final Movie movie = Movie(
@@ -21,7 +21,11 @@ void main() {
       await widgetTester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: GridCard(movie: movie),
+            body: GridCard(
+              movie: movie,
+              setLastMovie: (Movie movie) {},
+              updateMovie: (Movie movie) {},
+            ),
           ),
         ),
       );
@@ -40,7 +44,11 @@ void main() {
           await widgetTester.pumpWidget(
             MaterialApp(
               home: Scaffold(
-                body: GridCard(movie: movie),
+                body: GridCard(
+                  movie: movie,
+                  setLastMovie: (Movie movie) {},
+                  updateMovie: (Movie movie) {},
+                ),
               ),
             ),
           );
@@ -58,7 +66,11 @@ void main() {
           await widgetTester.pumpWidget(
             MaterialApp(
               home: Scaffold(
-                body: GridCard(movie: movie),
+                body: GridCard(
+                  movie: movie,
+                  setLastMovie: (Movie movie) {},
+                  updateMovie: (Movie movie) {},
+                ),
               ),
             ),
           );

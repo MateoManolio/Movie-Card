@@ -7,6 +7,7 @@ import 'package:movie_card/src/domain/entity/event.dart';
 import 'package:movie_card/src/domain/entity/movie.dart';
 import 'package:movie_card/src/domain/usecase/fetch_last_seen_movie_usecase.dart';
 import 'package:movie_card/src/domain/usecase/movies_by_type_usecase.dart';
+import 'package:movie_card/src/domain/usecase/update_movie_usecase.dart';
 import 'package:movie_card/src/presentation/bloc/movies_bloc.dart';
 
 class MockGetMoviesUseCase extends Mock
@@ -21,6 +22,14 @@ class MockFetchLastSeenMovieUseCase extends Mock
     implements FetchLastSeenMovieUseCase {
   @override
   Future<Movie> call([int? params]) {
+    return Future<Movie>.value(movie);
+  }
+}
+
+class MockUpdateMovieUseCase extends Mock
+    implements UpdateMovieUseCase {
+  @override
+  Future<Movie> call([Movie? params]) {
     return Future<Movie>.value(movie);
   }
 }
@@ -48,8 +57,9 @@ void main() {
         () {
           final MockGetMoviesUseCase mockPopularMoviesUseCase = MockGetMoviesUseCase();
           final MockFetchLastSeenMovieUseCase fetchFirstLastMovie = MockFetchLastSeenMovieUseCase();
+          final MockUpdateMovieUseCase updateMovieUseCase = MockUpdateMovieUseCase();
           moviesBloc = MoviesBloc(
-            getMoviesUseCase: mockPopularMoviesUseCase, fetchFirstMovie: fetchFirstLastMovie,
+            getMoviesUseCase: mockPopularMoviesUseCase, fetchFirstMovie: fetchFirstLastMovie, updateMovieUseCase: updateMovieUseCase,
           );
         },
       );

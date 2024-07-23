@@ -25,7 +25,8 @@ void main() {
         MaterialApp(
           home: Movies(
             movies: movies,
-            setLastMovie: (Movie movie) {  },
+            setLastMovie: (Movie movie) {},
+            updateMovie: (Movie movie) {},
           ),
         ),
       );

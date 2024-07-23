@@ -40,30 +40,32 @@ class _MovieMenuState extends State<MovieMenu> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-                StreamBuilder<Event<Movie>>(
-                  stream: widget.moviesBloc.movieStream,
-                  builder: (
-                    BuildContext context,
-                    AsyncSnapshot<Event<Movie>> snapshot,
-                  ) {
-                    switch (snapshot.data?.state) {
-                      case Status.loading:
-                        return LastSeenLoader();
-                      case Status.empty:
-                      case Status.success:
-                        return LastSeen(
-                          movie: snapshot.data!.data!,
-                          setLastMovie: (Movie movie) =>
-                              widget.moviesBloc.setLastMovie(movie),
-                        );
-                      case null:
-                      case Status.error:
-                        return CustomError(
-                          message: errorMessageLastSeen,
-                        );
-                    }
-                  },
-                ),
+          StreamBuilder<Event<Movie>>(
+            stream: widget.moviesBloc.movieStream,
+            builder: (
+              BuildContext context,
+              AsyncSnapshot<Event<Movie>> snapshot,
+            ) {
+              switch (snapshot.data?.state) {
+                case Status.loading:
+                  return LastSeenLoader();
+                case Status.empty:
+                case Status.success:
+                  return LastSeen(
+                    movie: snapshot.data!.data!,
+                    setLastMovie: (Movie movie) =>
+                        widget.moviesBloc.setLastMovie(movie),
+                    updateMovie: (Movie movie) =>
+                        widget.moviesBloc.updateMovie(movie),
+                  );
+                case null:
+                case Status.error:
+                  return CustomError(
+                    message: errorMessageLastSeen,
+                  );
+              }
+            },
+          ),
           StreamBuilder<Event<List<Movie>>>(
             stream: widget.moviesBloc.popularStream,
             initialData: Event<List<Movie>>.loading(),
@@ -73,13 +75,15 @@ class _MovieMenuState extends State<MovieMenu> {
             ) {
               switch (snapshot.data?.state) {
                 case Status.loading:
-                  return MoviesLoader();
                 case Status.empty:
+                  return MoviesLoader();
                 case Status.success:
                   return Movies(
                     movies: snapshot.data!.data!,
                     setLastMovie: (Movie movie) =>
                         widget.moviesBloc.setLastMovie(movie),
+                    updateMovie: (Movie movie) =>
+                        widget.moviesBloc.updateMovie(movie),
                   );
                 case null:
                 case Status.error:

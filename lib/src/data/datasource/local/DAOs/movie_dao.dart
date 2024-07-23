@@ -15,22 +15,28 @@ abstract class MovieDao {
   @Query('SELECT * FROM Movie m WHERE EXISTS( SELECT 1 FROM MovieCategory c WHERE m.id = c.movieId AND c.category = :type )')
   Future<List<Movie>> findMovieByType(Endpoint type);
 
-  @Insert(onConflict: OnConflictStrategy.ignore)
+  @Query('SELECT * FROM Movie WHERE saved = true')
+  Future<List<Movie>> findSavedMovies();
+
+  @Query('SELECT * FROM Movie WHERE liked = true')
+  Future<List<Movie>> findLikedMovies();
+
+  @insert
   Future<void> insertMovie(Movie movie);
 
-  @Insert(onConflict: OnConflictStrategy.ignore)
+  @insert
   Future<void> insertMovieCategory(MovieCategory movieCategory);
 
   @Update(onConflict: OnConflictStrategy.replace)
   Future<void> updateMovie(Movie movie);
 
-  void insertNewMovie(Movie movie, Endpoint endpoint) {
-    insertMovie(movie);
-    insertMovieCategory(
+  Future<void> insertNewMovie(Movie movie, Endpoint endpoint) async {
+    await insertMovieCategory(
       MovieCategory(
         category: endpoint,
         movieId: movie.id,
       ),
     );
+    await insertMovie(movie);
   }
 }

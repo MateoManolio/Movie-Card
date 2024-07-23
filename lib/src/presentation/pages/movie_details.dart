@@ -20,11 +20,17 @@ class MovieDetails extends StatefulWidget {
   final Movie movie;
   final MovieDetailsBloc movieBloc;
   final Function(Movie) setLastMovie;
+  final Function(Movie) updateMovie;
+  final String posterTag;
+  final String backdropTag;
 
   const MovieDetails({
     required this.movie,
     required this.movieBloc,
     required this.setLastMovie,
+    required this.posterTag,
+    required this.backdropTag,
+    required this.updateMovie,
     super.key,
   });
 
@@ -33,7 +39,6 @@ class MovieDetails extends StatefulWidget {
 }
 
 class _MovieDetailsState extends State<MovieDetails> {
-
   @override
   void initState() {
     widget.setLastMovie(widget.movie);
@@ -50,6 +55,8 @@ class _MovieDetailsState extends State<MovieDetails> {
           children: <Widget>[
             MoviePresentation(
               movie: widget.movie,
+              posterTag: widget.posterTag,
+              backdropTag: widget.backdropTag,
             ),
             Overview(
               overview: widget.movie.overview,
@@ -83,7 +90,7 @@ class _MovieDetailsState extends State<MovieDetails> {
         ),
       ),
       floatingActionButton: CustomNavigationBar(
-        movie: widget.movie,
+        movie: widget.movie, updateMovie: widget.updateMovie,
       ),
     );
   }

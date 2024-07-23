@@ -12,11 +12,13 @@ class LastSeen extends StatelessWidget {
   const LastSeen({
     required this.movie,
     required this.setLastMovie,
+    required this.updateMovie,
     super.key,
   });
 
   final Movie movie;
   final Function(Movie) setLastMovie;
+  final Function(Movie) updateMovie;
 
   static const String title = "Last seen";
   static const String asset = 'assets/error/default_backdrop.jpeg';
@@ -48,6 +50,9 @@ class LastSeen extends StatelessWidget {
               arguments: MovieDetailsArguments(
                 movie: movie,
                 setLastMovie: setLastMovie,
+                backdropTag: movie.backdropName,
+                posterTag: '',
+                updateMovie: updateMovie,
               ),
             );
           },

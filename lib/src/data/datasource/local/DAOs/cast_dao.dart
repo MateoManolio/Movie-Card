@@ -9,7 +9,7 @@ abstract class CastDao{
   @Query('SELECT * FROM MovieCast WHERE movieId = :movieId ')
   Future<List<Cast>> getCastByMovie(int movieId);
 
-  @Insert(onConflict: OnConflictStrategy.ignore)
+  @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertCast(List<Cast> cast);
 
   @Update(onConflict: OnConflictStrategy.replace)

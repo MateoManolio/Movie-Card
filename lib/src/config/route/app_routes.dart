@@ -2,18 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/repository/movies_repository.dart';
 import '../../data/datasource/local/movie_database.dart';
 import '../../data/datasource/remote/api_repository.dart';
 import '../../data/repository/cast_repository.dart';
+import '../../data/repository/movies_repository.dart';
+import '../../domain/entity/movie.dart';
 import '../../domain/usecase/fetch_last_seen_movie_usecase.dart';
+import '../../domain/usecase/fetch_liked_movies_usecase.dart';
+import '../../domain/usecase/fetch_saved_movies_usecase.dart';
 import '../../domain/usecase/load_cast_usecase.dart';
 import '../../domain/usecase/movies_by_type_usecase.dart';
+import '../../domain/usecase/update_movie_usecase.dart';
 import '../../presentation/bloc/movie_details_bloc.dart';
 import '../../presentation/bloc/movies_bloc.dart';
+import '../../presentation/bloc/saved_bloc.dart';
 import '../../presentation/navigation/movie_details_args.dart';
 import '../../presentation/pages/home_page.dart';
 import '../../presentation/pages/movie_details.dart';
+import '../../presentation/pages/saved_movies.dart';
 
 abstract class AppRoutes {
   static Map<String, WidgetBuilder> get routes {
@@ -24,11 +30,14 @@ abstract class AppRoutes {
             .arguments! as MovieDetailsArguments;
         return Provider<MovieDetailsBloc>(
           create: (_) => MovieDetailsBloc(
-            loadCastUseCase: LoadCastUseCase(repository: CastRepository(repository: APIRepository(client: Client()),
-              database: Provider.of<MovieDatabase>(
-                context,
-                listen: false,
-              ),),
+            loadCastUseCase: LoadCastUseCase(
+              repository: CastRepository(
+                repository: APIRepository(client: Client()),
+                database: Provider.of<MovieDatabase>(
+                  context,
+                  listen: false,
+                ),
+              ),
             ),
           ),
           builder: (BuildContext builderContext, _) {
@@ -39,40 +48,110 @@ abstract class AppRoutes {
                 listen: false,
               ),
               setLastMovie: arguments.setLastMovie,
+              posterTag: arguments.posterTag,
+              backdropTag: arguments.backdropTag,
+              updateMovie: arguments.updateMovie,
             );
           },
         );
       },
-      Routes.homeRouteName: (BuildContext context) => Provider<MoviesBloc>(
-            create: (BuildContext builderContext) => MoviesBloc(
-              getMoviesUseCase: MoviesByTypeUseCase(
-                repository: MovieRepository(
-                  repository: APIRepository(client: Client()),
-                  database: Provider.of<MovieDatabase>(
-                    builderContext,
-                    listen: false,
+      Routes.homeRouteName: (BuildContext context) => MultiProvider(
+            providers: [
+              Provider<MoviesBloc>(
+                create: (BuildContext builderContext) => MoviesBloc(
+                  getMoviesUseCase: MoviesByTypeUseCase(
+                    repository: MovieRepository(
+                      repository: APIRepository(client: Client()),
+                      database: Provider.of<MovieDatabase>(
+                        builderContext,
+                        listen: false,
+                      ),
+                    ),
+                  ),
+                  fetchFirstMovie: FetchLastSeenMovieUseCase(
+                    repository: MovieRepository(
+                      repository: APIRepository(client: Client()),
+                      database: Provider.of<MovieDatabase>(
+                        builderContext,
+                        listen: false,
+                      ),
+                    ),
+                  ),
+                  updateMovieUseCase: UpdateMovieUseCase(
+                    repository: MovieRepository(
+                      repository: APIRepository(client: Client()),
+                      database: Provider.of<MovieDatabase>(
+                        builderContext,
+                        listen: false,
+                      ),
+                    ),
                   ),
                 ),
               ),
-              fetchFirstMovie: FetchLastSeenMovieUseCase(
-                repository: MovieRepository(
-                  repository: APIRepository(client: Client()),
-                  database: Provider.of<MovieDatabase>(
-                    builderContext,
-                    listen: false,
+              Provider<SavedMoviesBloc>(
+                create: (BuildContext builderContext) => SavedMoviesBloc(
+                  fetchSavedMoviesUseCase: FetchSavedMoviesUseCase(
+                    repository: MovieRepository(
+                      repository: APIRepository(client: Client()),
+                      database: Provider.of<MovieDatabase>(
+                        builderContext,
+                        listen: false,
+                      ),
+                    ),
+                  ),
+                  fetchLikedMoviesUseCase: FetchLikedMoviesUseCase(
+                    repository: MovieRepository(
+                      repository: APIRepository(client: Client()),
+                      database: Provider.of<MovieDatabase>(
+                        builderContext,
+                        listen: false,
+                      ),
+                    ),
                   ),
                 ),
+              ),
+            ],
+            builder: (BuildContext builderContext, _) => HomePage(
+              bloc: Provider.of<MoviesBloc>(
+                builderContext,
+                listen: false,
               ),
             ),
-            builder: (BuildContext builderContext, _) {
-              return HomePage(
-                bloc: Provider.of<MoviesBloc>(
+          ),
+      Routes.savedMovies: (BuildContext context) {
+        return Provider<SavedMoviesBloc>(
+          create: (BuildContext builderContext) => SavedMoviesBloc(
+            fetchSavedMoviesUseCase: FetchSavedMoviesUseCase(
+              repository: MovieRepository(
+                repository: APIRepository(client: Client()),
+                database: Provider.of<MovieDatabase>(
                   builderContext,
                   listen: false,
                 ),
-              );
-            },
+              ),
+            ),
+            fetchLikedMoviesUseCase: FetchLikedMoviesUseCase(
+              repository: MovieRepository(
+                repository: APIRepository(client: Client()),
+                database: Provider.of<MovieDatabase>(
+                  builderContext,
+                  listen: false,
+                ),
+              ),
+            ),
           ),
+          builder: (BuildContext builderContext, _) {
+            return SavedMovies(
+              bloc: Provider.of<SavedMoviesBloc>(
+                builderContext,
+                listen: false,
+              ),
+              setLastMovie: (Movie m) {},
+              updateMovie: (Movie m) {},
+            );
+          },
+        );
+      },
     };
   }
 }
@@ -84,4 +163,5 @@ abstract class Routes {
   static const String drawerRouteName = '/drawer';
   static const String mostPopularRouteName = '/most_popular';
   static const String upcomingRouteName = '/upcoming';
+  static const String savedMovies = '/saved';
 }

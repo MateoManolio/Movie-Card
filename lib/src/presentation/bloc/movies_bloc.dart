@@ -22,12 +22,13 @@ class MoviesBloc extends IBloc {
 
   final IUseCase<Future<DataState<List<Movie>>>, Endpoint> getMoviesUseCase;
   final IUseCase<Future<Movie>, int> fetchFirstMovie;
+  final IUseCase<void, Movie> updateMovieUseCase;
 
   void getLastSeenMovie() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final int? movieId = prefs.getInt(lastMoviePreference);
     _movieStreamController.sink
-        .add(Event<Movie>.success(await fetchFirstMovie.call(movieId!)));
+        .add(Event<Movie>.success(await fetchFirstMovie.call(movieId != null ? movieId : 0)));
   }
 
   void setLastMovie(Movie movie) async {
@@ -39,6 +40,7 @@ class MoviesBloc extends IBloc {
   MoviesBloc({
     required this.fetchFirstMovie,
     required this.getMoviesUseCase,
+    required this.updateMovieUseCase,
   });
 
   @override
@@ -80,6 +82,9 @@ class MoviesBloc extends IBloc {
         updateStream(upcomingStreamController, movies);
     }
   }
+
+  void updateMovie(Movie movie) => updateMovieUseCase.call(movie);
+
 
   Stream<Event<List<Movie>>> get popularStream =>
       popularStreamController.stream;

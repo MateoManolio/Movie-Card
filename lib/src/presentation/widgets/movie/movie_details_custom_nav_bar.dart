@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/util/notification_service.dart';
 import '../../../core/util/ui_consts.dart';
 import '../../../domain/entity/movie.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({
     required this.movie,
+    required this.updateMovie,
     super.key,
   });
 
+  final Function(Movie) updateMovie;
   final Movie movie;
 
   @override
@@ -18,6 +21,14 @@ class CustomNavigationBar extends StatefulWidget {
 class _CustomNavigationBarState extends State<CustomNavigationBar>
     with TickerProviderStateMixin {
   int likes = 0;
+  late final NotificationService notificationService;
+
+  @override
+  void initState() {
+    notificationService = NotificationService();
+    notificationService.initializePlatformNotifications();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +58,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
             onTap: () {
               setState(() {
                 widget.movie.toggleLiked();
+                widget.updateMovie(widget.movie);
               });
             },
             child: Row(
@@ -70,6 +82,14 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               setState(
                 () {
                   widget.movie.toggleSaved();
+                  widget.updateMovie(widget.movie);
+                  if(widget.movie.saved){
+                    notificationService.showLocalNotification(
+                      id: 0,
+                      title: 'Movie Saved',
+                      body: '${widget.movie.title} was saved!',
+                    );
+                  }
                 },
               );
             },

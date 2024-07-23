@@ -93,11 +93,11 @@ class _$MovieDatabase extends MovieDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Genre` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `MovieCast` (`id` INTEGER NOT NULL, `profilePath` TEXT NOT NULL, `movieId` INTEGER NOT NULL, FOREIGN KEY (`movieId`) REFERENCES `Movie` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `MovieCast` (`id` INTEGER NOT NULL, `profilePath` TEXT NOT NULL, `movieId` INTEGER NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `MovieCategory` (`category` INTEGER NOT NULL, `movieId` INTEGER NOT NULL, FOREIGN KEY (`movieId`) REFERENCES `Movie` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`category`) REFERENCES `Category` (`category`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`category`, `movieId`))');
+            'CREATE TABLE IF NOT EXISTS `MovieCategory` (`category` INTEGER NOT NULL, `movieId` INTEGER NOT NULL, PRIMARY KEY (`category`, `movieId`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `MovieGenre` (`genreId` INTEGER NOT NULL, `movieId` INTEGER NOT NULL, FOREIGN KEY (`genreId`) REFERENCES `Genre` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`movieId`) REFERENCES `Movie` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION, PRIMARY KEY (`genreId`, `movieId`))');
+            'CREATE TABLE IF NOT EXISTS `MovieGenre` (`genreId` INTEGER NOT NULL, `movieId` INTEGER NOT NULL, PRIMARY KEY (`genreId`, `movieId`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -166,7 +166,7 @@ class _$CastDao extends CastDao {
 
   @override
   Future<void> insertCast(List<Cast> cast) async {
-    await _castInsertionAdapter.insertList(cast, OnConflictStrategy.ignore);
+    await _castInsertionAdapter.insertList(cast, OnConflictStrategy.replace);
   }
 
   @override
@@ -273,14 +273,46 @@ class _$MovieDao extends MovieDao {
   }
 
   @override
+  Future<List<Movie>> findSavedMovies() async {
+    return _queryAdapter.queryList('SELECT * FROM Movie WHERE saved = true',
+        mapper: (Map<String, Object?> row) => Movie(
+            id: row['id'] as int,
+            title: row['title'] as String,
+            posterName: row['posterName'] as String,
+            backdropName: row['backdropName'] as String,
+            releaseDate: row['releaseDate'] as String,
+            score: row['score'] as double,
+            genres: _genresListConverter.decode(row['genres'] as String),
+            overview: row['overview'] as String,
+            saved: (row['saved'] as int) != 0,
+            liked: (row['liked'] as int) != 0));
+  }
+
+  @override
+  Future<List<Movie>> findLikedMovies() async {
+    return _queryAdapter.queryList('SELECT * FROM Movie WHERE liked = true',
+        mapper: (Map<String, Object?> row) => Movie(
+            id: row['id'] as int,
+            title: row['title'] as String,
+            posterName: row['posterName'] as String,
+            backdropName: row['backdropName'] as String,
+            releaseDate: row['releaseDate'] as String,
+            score: row['score'] as double,
+            genres: _genresListConverter.decode(row['genres'] as String),
+            overview: row['overview'] as String,
+            saved: (row['saved'] as int) != 0,
+            liked: (row['liked'] as int) != 0));
+  }
+
+  @override
   Future<void> insertMovie(Movie movie) async {
-    await _movieInsertionAdapter.insert(movie, OnConflictStrategy.replace);
+    await _movieInsertionAdapter.insert(movie, OnConflictStrategy.abort);
   }
 
   @override
   Future<void> insertMovieCategory(MovieCategory movieCategory) async {
     await _movieCategoryInsertionAdapter.insert(
-        movieCategory, OnConflictStrategy.replace);
+        movieCategory, OnConflictStrategy.abort);
   }
 
   @override
@@ -342,13 +374,13 @@ class _$GenreDao extends GenreDao {
 
   @override
   Future<void> insertGenre(Genre genre) async {
-    await _genreInsertionAdapter.insert(genre, OnConflictStrategy.ignore);
+    await _genreInsertionAdapter.insert(genre, OnConflictStrategy.replace);
   }
 
   @override
   Future<void> insertMovieGenre(MovieGenre movieGenre) async {
     await _movieGenreInsertionAdapter.insert(
-        movieGenre, OnConflictStrategy.ignore);
+        movieGenre, OnConflictStrategy.abort);
   }
 
   @override
