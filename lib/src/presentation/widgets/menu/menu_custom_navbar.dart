@@ -10,7 +10,7 @@ class MenuCustomNavigationBar extends StatelessWidget {
   });
 
   final Function(int) onIconTap;
-  int currentIndex;
+  final int currentIndex;
 
   @override
   Widget build(BuildContext context) {

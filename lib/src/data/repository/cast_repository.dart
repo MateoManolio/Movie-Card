@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../../core/util/data_state.dart';
@@ -15,17 +17,28 @@ class CastRepository {
     required this.database,
   });
 
-  Future<DataState<List<Cast>>> loadCast(int movieId) async {
+  Future _updateDataBase(int movieId) async {
     if (await Connectivity().checkConnectivity() != ConnectivityResult.none) {
       final DataState<List<Cast>> apiResponse =
           await repository.loadCast(movieId);
       if (apiResponse.state == Status.success) {
-
         await database.castDao.insertCast(apiResponse.data!);
       }
     }
+  }
+
+  Future<DataState<List<Cast>>> loadCast(int movieId) async {
+    List<Cast> cast = await database.castDao.getCastByMovie(movieId);
+
+    if (cast.isEmpty) {
+      await _updateDataBase(movieId);
+      cast = await database.castDao.getCastByMovie(movieId);
+    } else {
+      unawaited(_updateDataBase(movieId));
+    }
+
     return DataSuccess<List<Cast>>(
-      data: await database.castDao.getCastByMovie(movieId),
+      data: cast,
     );
   }
 }

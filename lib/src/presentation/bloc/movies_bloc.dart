@@ -11,7 +11,7 @@ import '../../domain/entity/event.dart';
 import '../../domain/entity/movie.dart';
 
 class MoviesBloc extends IBloc {
-  final StreamController<Event<Movie>> _movieStreamController =
+  final StreamController<Event<Movie?>> _movieStreamController =
       StreamController<Event<Movie>>.broadcast();
   final StreamController<Event<List<Movie>>> popularStreamController =
       StreamController<Event<List<Movie>>>.broadcast();
@@ -21,14 +21,22 @@ class MoviesBloc extends IBloc {
       StreamController<Event<List<Movie>>>.broadcast();
 
   final IUseCase<Future<DataState<List<Movie>>>, Endpoint> getMoviesUseCase;
-  final IUseCase<Future<Movie>, int> fetchFirstMovie;
+  final IUseCase<Future<Movie?>, int> fetchFirstMovie;
   final IUseCase<void, Movie> updateMovieUseCase;
 
   void getLastSeenMovie() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final int? movieId = prefs.getInt(lastMoviePreference);
-    _movieStreamController.sink
-        .add(Event<Movie>.success(await fetchFirstMovie.call(movieId != null ? movieId : 0)));
+    final Movie? movie =
+        await fetchFirstMovie.call(movieId != null ? movieId : 0);
+
+    _movieStreamController.sink.add(
+      movie == null
+          ? Event<Movie>.empty()
+          : Event<Movie>.success(
+              movie,
+            ),
+    );
   }
 
   void setLastMovie(Movie movie) async {
@@ -85,7 +93,6 @@ class MoviesBloc extends IBloc {
 
   void updateMovie(Movie movie) => updateMovieUseCase.call(movie);
 
-
   Stream<Event<List<Movie>>> get popularStream =>
       popularStreamController.stream;
 
@@ -95,7 +102,7 @@ class MoviesBloc extends IBloc {
   Stream<Event<List<Movie>>> get upcomingStream =>
       upcomingStreamController.stream;
 
-  Stream<Event<Movie>> get movieStream => _movieStreamController.stream;
+  Stream<Event<Movie?>> get movieStream => _movieStreamController.stream;
 
   @override
   Future<void> initialize() async {

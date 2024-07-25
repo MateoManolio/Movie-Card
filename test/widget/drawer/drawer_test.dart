@@ -16,6 +16,7 @@ void main() {
               duration: Duration(milliseconds: 200),
             ),
             isSideMenuClosed: true,
+            selectedPage: 0,
           ),
         ),
       );
@@ -38,6 +39,7 @@ void main() {
             switchToPage: (int newPage) {},
             animationController: animationController,
             isSideMenuClosed: true,
+            selectedPage: 0,
           ),
         ),
       );

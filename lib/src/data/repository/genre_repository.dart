@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../../core/util/data_state.dart';
@@ -20,7 +22,7 @@ class GenreRepository {
     return await repository.loadGenres();
   }
 
-  Future<DataState<List<Genre>>> getGenreForMovie(Movie movie) async {
+  Future _updateDataBase(Movie movie) async {
     if (await Connectivity().checkConnectivity() != ConnectivityResult.none) {
       final DataState<List<Genre>> apiResponse = await loadGenres();
       if (apiResponse.state == Status.success) {
@@ -32,8 +34,19 @@ class GenreRepository {
         );
       }
     }
+  }
+
+  Future<DataState<List<Genre>>> getGenreForMovie(Movie movie) async {
+    List<Genre> genres = await database.genreDao.getGenreByMovie(movie.id);
+
+    if (genres.isEmpty) {
+      await _updateDataBase(movie);
+      genres = await database.genreDao.getGenreByMovie(movie.id);
+    } else {
+      unawaited(_updateDataBase(movie));
+    }
     return DataSuccess<List<Genre>>(
-      data: await database.genreDao.getGenreByMovie(movie.id),
+      data: genres,
     );
   }
 }

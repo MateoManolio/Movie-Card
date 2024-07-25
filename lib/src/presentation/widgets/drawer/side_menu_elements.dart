@@ -6,17 +6,14 @@ import 'drawer_element.dart';
 class SideMenuElements extends StatefulWidget {
   final double width;
 
-  static int selectedPage = homePage;
+  final int selectedPage;
 
   SideMenuElements({
     required this.width,
     required this.optionSelected,
+    required this.selectedPage,
     super.key,
   });
-
-  static void setSelectedPage(int newPage){
-    selectedPage = newPage;
-  }
 
   final Function(int) optionSelected;
   @override
@@ -26,10 +23,11 @@ class SideMenuElements extends StatefulWidget {
 class _SideMenuElementsState extends State<SideMenuElements> {
   static const String homeText = "Home";
   static const String popularText = "Most Popular";
-  static const String upcomingText = "Upcoming";
+  static const String searchText = "Search";
+  static const String savedText = "Saved / Liked";
+
   void goToPage(int newPage) {
     setState(() {
-      SideMenuElements.setSelectedPage(newPage);
       widget.optionSelected.call(newPage);
     });
   }
@@ -43,7 +41,7 @@ class _SideMenuElementsState extends State<SideMenuElements> {
           icon: Icons.home,
           text: homeText,
           width: widget.width,
-          isActive: SideMenuElements.selectedPage == homePage,
+          isActive: widget.selectedPage == homePage,
           onIconTap: goToPage,
           pageRoute: homePage,
         ),
@@ -51,17 +49,25 @@ class _SideMenuElementsState extends State<SideMenuElements> {
           icon: Icons.stars_rounded,
           text: popularText,
           width: widget.width,
-          isActive: SideMenuElements.selectedPage == popularPage,
+          isActive: widget.selectedPage == popularPage,
           onIconTap: goToPage,
           pageRoute: popularPage,
         ),
         DrawerElement(
-          icon: Icons.calendar_today_rounded,
-          text: upcomingText,
+          icon: Icons.search_rounded,
+          text: searchText,
           width: widget.width,
-          isActive: SideMenuElements.selectedPage == upcomingPage,
+          isActive: widget.selectedPage == searchPage,
           onIconTap: goToPage,
-          pageRoute: upcomingPage,
+          pageRoute: searchPage,
+        ),
+        DrawerElement(
+          icon: Icons.bookmark_border_rounded,
+          text: savedText,
+          width: widget.width,
+          isActive: widget.selectedPage == savePage,
+          onIconTap: goToPage,
+          pageRoute: savePage,
         ),
       ],
     );

@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-import '../models/movie_model.dart';
 import '../../core/util/data_state.dart';
 import '../../core/util/enums.dart';
 import '../../domain/entity/movie.dart';
@@ -16,34 +17,45 @@ class MovieRepository {
     required this.database,
   });
 
-  Future<DataState<List<Movie>>> getMoviesByType(Endpoint endpoint) async {
+  Future _updateDataBase(Endpoint endpoint) async {
     if (await Connectivity().checkConnectivity() != ConnectivityResult.none) {
       final DataState<List<Movie>> apiResponse =
-      await repository.loadMoviesByType(endpoint);
+          await repository.loadMoviesByType(endpoint);
       if (apiResponse.state == Status.success) {
         apiResponse.data?.forEach(
-              (Movie movie) {
+          (Movie movie) {
             database.movieDao.insertNewMovie(movie, endpoint);
           },
         );
       }
     }
+  }
+
+  Future<DataState<List<Movie>>> getMoviesByType(Endpoint endpoint) async {
+    List<Movie> movies = await database.movieDao.findMovieByType(endpoint);
+
+    unawaited(_updateDataBase(endpoint));
+
+    if (movies.isEmpty) {
+      return await repository.loadMoviesByType(endpoint);
+    }
 
     return DataSuccess<List<Movie>>(
-      data: await database.movieDao.findMovieByType(endpoint),
+      data: movies,
     );
   }
 
-Future<Movie> getMovieById(int movieId) async {
-  return await database.movieDao.findMovieById(movieId) ?? MovieModel.mockMovie();
-}
+  Future<Movie?> getMovieById(int movieId) async {
+    return await database.movieDao.findMovieById(movieId);
+  }
 
-Future<DataState<List<Movie>>> getSavedMovies() async => DataSuccess<List<Movie>>(data: await database.movieDao.findSavedMovies());
+  Future<DataState<List<Movie>>> getSavedMovies() async =>
+      DataSuccess<List<Movie>>(data: await database.movieDao.findSavedMovies());
 
-Future<DataState<List<Movie>>> getLikedMovies() async => DataSuccess<List<Movie>>(data: await database.movieDao.findLikedMovies());
+  Future<DataState<List<Movie>>> getLikedMovies() async =>
+      DataSuccess<List<Movie>>(data: await database.movieDao.findLikedMovies());
 
-void updateMovie(Movie movie) {
+  void updateMovie(Movie movie) {
     database.movieDao.updateMovie(movie);
-}
-
+  }
 }

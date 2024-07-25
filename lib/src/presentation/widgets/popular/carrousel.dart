@@ -12,7 +12,7 @@ class Carrousel extends StatefulWidget {
   final List<Movie> movies;
   final Function(Movie) setLastMovie;
   final Function(Movie) updateMovie;
-  late Timer _timer;
+  late final Timer _timer;
 
   Timer get getTimer => _timer;
 

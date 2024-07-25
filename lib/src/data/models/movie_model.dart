@@ -1,4 +1,3 @@
-import 'cast_model.dart';
 import '../../domain/entity/movie.dart';
 
 class MovieModel extends Movie {
@@ -14,7 +13,6 @@ class MovieModel extends Movie {
   });
 
   factory MovieModel.fromJson(Map<String, dynamic> json) {
-
     const int percent = 10;
     return MovieModel(
       id: json['id'].toInt(),

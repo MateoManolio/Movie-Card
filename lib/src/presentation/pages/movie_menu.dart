@@ -40,16 +40,17 @@ class _MovieMenuState extends State<MovieMenu> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          StreamBuilder<Event<Movie>>(
+          StreamBuilder<Event<Movie?>>(
             stream: widget.moviesBloc.movieStream,
             builder: (
               BuildContext context,
-              AsyncSnapshot<Event<Movie>> snapshot,
+              AsyncSnapshot<Event<Movie?>> snapshot,
             ) {
               switch (snapshot.data?.state) {
                 case Status.loading:
                   return LastSeenLoader();
                 case Status.empty:
+                  return Container();
                 case Status.success:
                   return LastSeen(
                     movie: snapshot.data!.data!,

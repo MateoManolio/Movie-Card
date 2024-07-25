@@ -1,18 +1,21 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../../../core/util/ui_consts.dart';
 import 'side_menu.dart';
 
 class HasDrawer extends StatefulWidget {
   final Widget childPage;
   final Function(int) switchToPage;
   final AnimationController animationController;
-  bool isSideMenuClosed;
+  final bool isSideMenuClosed;
+  final int selectedPage;
 
   HasDrawer({
     required this.childPage,
     required this.switchToPage,
     required this.animationController,
     required this.isSideMenuClosed,
+    required this.selectedPage,
     super.key,
   });
 
@@ -45,26 +48,33 @@ class _HasDrawerState extends State<HasDrawer>
         curve: Curves.fastOutSlowIn,
       ),
     );
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
     return Stack(
       children: <Widget>[
+        Container(
+          width: width,
+          height: height,
+          color: colors.primaryContainer,
+        ),
         AnimatedPositioned(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
+          width: width,
+          height: height,
           duration: Duration(milliseconds: animationDrawerDuration),
           curve: Curves.fastOutSlowIn,
-          right: widget.isSideMenuClosed
-              ? -MediaQuery.of(context).size.width * drawerSize
-              : 0,
+          right: widget.isSideMenuClosed ? -width * drawerSize : 0,
           child: SideMenu(
             optionSelected: (int newPage) {
-              widget.isSideMenuClosed = !widget.isSideMenuClosed;
               widget.switchToPage.call(newPage);
             },
+            selectedPage: widget.selectedPage,
           ),
         ),
         Transform(
@@ -77,9 +87,7 @@ class _HasDrawerState extends State<HasDrawer>
             ),
           child: Transform.translate(
             offset: Offset(
-              -openDrawerAnimation.value *
-                  MediaQuery.of(context).size.width *
-                  drawerSize,
+              -openDrawerAnimation.value * width * drawerSize,
               0,
             ),
             child: Transform.scale(

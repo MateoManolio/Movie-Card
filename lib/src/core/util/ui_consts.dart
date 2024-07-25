@@ -42,9 +42,9 @@ const double boxOffsetY = 10.0;
 
 // Pages
 const int homePage = 0;
-const int searchPage = 1;
-const int savePage = 2;
-const int popularPage = 3;
+const int popularPage = 1;
+const int searchPage = 2;
+const int savePage = 3;
 const int upcomingPage = 4;
 
 // GridView

@@ -55,8 +55,6 @@ void main() {
   testWidgets(
     'Carrousel renders without error',
     (WidgetTester tester) async {
-      final MockMoviesBlocSuccess mockMoviesBloc = MockMoviesBlocSuccess();
-
       await tester.pumpWidget(
         MaterialApp(
           home: Carrousel(
@@ -75,8 +73,6 @@ void main() {
   testWidgets(
     'Carrousel increments page with timer',
     (WidgetTester tester) async {
-      final MockMoviesBlocSuccess mockMoviesBloc = MockMoviesBlocSuccess();
-
       final Carrousel mockCarrousel = Carrousel(
         movies: List<Movie>.generate(10, (int index) => MovieModel.mockMovie()),
         setLastMovie: (Movie Movie) {},

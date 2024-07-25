@@ -12,6 +12,7 @@ void main() {
         MaterialApp(
           home: SideMenu(
             optionSelected: (int page) {},
+            selectedPage: 0,
           ),
         ),
       );
@@ -29,6 +30,7 @@ void main() {
             optionSelected: (int page) {
               test = 0;
             },
+            selectedPage: 0,
           ),
         ),
       );

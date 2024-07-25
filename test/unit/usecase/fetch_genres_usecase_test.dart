@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:movie_card/src/core/util/data_state.dart';
@@ -6,7 +5,6 @@ import 'package:movie_card/src/data/models/movie_model.dart';
 import 'package:movie_card/src/data/repository/genre_repository.dart';
 import 'package:movie_card/src/domain/entity/genre.dart';
 import 'package:movie_card/src/domain/entity/movie.dart';
-import 'package:movie_card/src/domain/repository/i_my_repository.dart';
 import 'package:movie_card/src/domain/usecase/fetch_genres_usecase.dart';
 
 class MockSuccessMyRepository extends Mock implements GenreRepository {
@@ -42,14 +40,12 @@ final Movie movie = MovieModel(
   backdropName: "/9n2tJBplPbgR2ca05hS5CKXwP2c.jpg",
   releaseDate: "2023-04-05",
   overview:
-  "While working underground to fix a water main, Brooklyn plumbers—and brothers—Mario and Luigi are transported down a mysterious pipe and wander into a magical new world. But when the brothers are separated, Mario embarks on an epic quest to find Luigi.",
+      "While working underground to fix a water main, Brooklyn plumbers—and brothers—Mario and Luigi are transported down a mysterious pipe and wander into a magical new world. But when the brothers are separated, Mario embarks on an epic quest to find Luigi.",
   genres: <int>[16, 10751, 12, 14, 35],
   score: 0.78,
 );
 
-
 void main() {
-
   test(
     'should return a list of genres based on provided ids',
     () async {

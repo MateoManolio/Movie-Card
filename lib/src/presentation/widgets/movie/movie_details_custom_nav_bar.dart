@@ -20,7 +20,6 @@ class CustomNavigationBar extends StatefulWidget {
 
 class _CustomNavigationBarState extends State<CustomNavigationBar>
     with TickerProviderStateMixin {
-  int likes = 0;
   late final NotificationService notificationService;
 
   @override
@@ -61,21 +60,12 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 widget.updateMovie(widget.movie);
               });
             },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                widget.movie.liked
-                    ? const Icon(
-                        Icons.favorite,
-                        color: Colors.redAccent,
-                      )
-                    : const Icon(Icons.favorite_border),
-                Text(
-                  likes.toString(),
-                  style: const TextStyle(color: Colors.grey),
-                ),
-              ],
-            ),
+            child: widget.movie.liked
+                ? const Icon(
+                    Icons.favorite,
+                    color: Colors.redAccent,
+                  )
+                : const Icon(Icons.favorite_border),
           ),
           GestureDetector(
             onTap: () {
@@ -83,7 +73,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
                 () {
                   widget.movie.toggleSaved();
                   widget.updateMovie(widget.movie);
-                  if(widget.movie.saved){
+                  if (widget.movie.saved) {
                     notificationService.showLocalNotification(
                       id: 0,
                       title: 'Movie Saved',
