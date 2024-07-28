@@ -6,9 +6,11 @@ import '../../core/util/enums.dart';
 class MovieCategory {
   final Endpoint category;
   final int movieId;
+  final int page;
 
   MovieCategory({
     required this.category,
     required this.movieId,
+    required this.page,
   });
 }

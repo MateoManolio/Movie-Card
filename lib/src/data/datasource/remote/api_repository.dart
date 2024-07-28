@@ -97,7 +97,10 @@ class APIRepository implements IMyRepository {
   }
 
   @override
-  Future<DataState<List<Movie>>> loadMoviesByType(Endpoint endpoint) async {
+  Future<DataState<List<Movie>>> loadMoviesByType(
+    Endpoint endpoint, [
+    String? page,
+  ]) async {
     late final String search;
     switch (endpoint) {
       case Endpoint.popular:
@@ -107,7 +110,8 @@ class APIRepository implements IMyRepository {
       case Endpoint.upcoming:
         search = upcoming;
     }
-    return await _fetchMovies('$moviesDetailsUri$search$apiKeyUri');
+    final String pageUri = page != null ? '&page=$page' : '';
+    return await _fetchMovies('$moviesDetailsUri$search$apiKeyUri$pageUri');
   }
 
   @override

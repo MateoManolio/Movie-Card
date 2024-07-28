@@ -1,12 +1,11 @@
-import 'package:movie_card/src/data/repository/movies_repository.dart';
-
+import '../../core/util/movies_by_type_params.dart';
+import '../../data/repository/movies_repository.dart';
 import '../../core/usecase/i_usecase.dart';
 import '../../core/util/data_state.dart';
-import '../../core/util/enums.dart';
 import '../entity/movie.dart';
 
 class MoviesByTypeUseCase
-    extends IUseCase<Future<DataState<List<Movie>>>, Endpoint> {
+    extends IUseCase<Future<DataState<List<Movie>>>, MoviesByTypeParams> {
   final MovieRepository repository;
 
   MoviesByTypeUseCase({
@@ -14,7 +13,7 @@ class MoviesByTypeUseCase
   });
 
   @override
-  Future<DataState<List<Movie>>> call([Endpoint? params]) async {
-    return repository.getMoviesByType(params!);
+  Future<DataState<List<Movie>>> call([MoviesByTypeParams? params]) async {
+    return repository.getMoviesByType(params!.endpoint, params.page);
   }
 }

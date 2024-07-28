@@ -17,27 +17,31 @@ class MovieRepository {
     required this.database,
   });
 
-  Future _updateDataBase(Endpoint endpoint) async {
+  Future _updateDataBase(Endpoint endpoint, int? page) async {
     if (await Connectivity().checkConnectivity() != ConnectivityResult.none) {
       final DataState<List<Movie>> apiResponse =
-          await repository.loadMoviesByType(endpoint);
+          await repository.loadMoviesByType(endpoint, page.toString());
       if (apiResponse.state == Status.success) {
         apiResponse.data?.forEach(
           (Movie movie) {
-            database.movieDao.insertNewMovie(movie, endpoint);
+            database.movieDao.insertNewMovie(movie, endpoint, page ?? 1);
           },
         );
       }
     }
   }
 
-  Future<DataState<List<Movie>>> getMoviesByType(Endpoint endpoint) async {
-    List<Movie> movies = await database.movieDao.findMovieByType(endpoint);
+  Future<DataState<List<Movie>>> getMoviesByType(
+    Endpoint endpoint,
+    int? page,
+  ) async {
+    List<Movie> movies =
+        await database.movieDao.findMovieByType(endpoint, page ?? 1);
 
-    unawaited(_updateDataBase(endpoint));
+    unawaited(_updateDataBase(endpoint, page));
 
     if (movies.isEmpty) {
-      return await repository.loadMoviesByType(endpoint);
+      return await repository.loadMoviesByType(endpoint, page.toString());
     }
 
     return DataSuccess<List<Movie>>(

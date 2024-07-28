@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/util/enums.dart';
+import '../../core/util/function_called_when_bottom_reached.dart';
 import '../../core/util/ui_consts.dart';
 import '../../domain/entity/event.dart';
 import '../../domain/entity/movie.dart';
@@ -23,7 +24,10 @@ class Popular extends StatefulWidget {
   State<Popular> createState() => _PopularState();
 }
 
-class _PopularState extends State<Popular> {
+class _PopularState extends State<Popular>
+    with AutomaticKeepAliveClientMixin, FunctionCallWhenBottomReached {
+  late int _currentPage;
+
   static const String title = 'Most Popular';
   static const String errorMessagePopular = 'Error to bring the Popular movies';
   static const String errorMessageNowPlaying =
@@ -40,14 +44,27 @@ class _PopularState extends State<Popular> {
 
   @override
   void initState() {
-    widget.moviesBloc.getMoviesByType(Endpoint.popular);
-    widget.moviesBloc.getMoviesByType(Endpoint.nowPlaying);
+    _currentPage = 1;
+    widget.moviesBloc.getMoviesByType(Endpoint.popular, _currentPage);
+    widget.moviesBloc.getMoviesByType(Endpoint.nowPlaying, 1);
     super.initState();
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void onReachBottom() {
+    _currentPage++;
+    widget.moviesBloc.getMoviesByType(Endpoint.popular, _currentPage);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+    listenToScrollController();
     return SingleChildScrollView(
+      controller: bottomReachedScrollController,
       child: Column(
         children: <Widget>[
           StreamBuilder<Event<List<Movie>>>(
