@@ -81,6 +81,7 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
     super.dispose();
     _pageController.dispose();
     animationController.dispose();
+    widget.bloc.dispose();
   }
 
   Future<bool> _checkExit() async {

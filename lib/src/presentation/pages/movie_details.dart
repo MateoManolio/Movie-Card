@@ -96,4 +96,10 @@ class _MovieDetailsState extends State<MovieDetails> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    widget.movieBloc.dispose();
+    super.dispose();
+  }
 }

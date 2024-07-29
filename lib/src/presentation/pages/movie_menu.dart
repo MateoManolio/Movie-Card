@@ -24,7 +24,7 @@ class MovieMenu extends StatefulWidget {
 }
 
 class _MovieMenuState extends State<MovieMenu>
-    with AutomaticKeepAliveClientMixin, FunctionCallWhenBottomReached {
+    with FunctionCallWhenBottomReached {
   late int _currentPage;
 
   static const double endPadding = 130;
@@ -43,9 +43,6 @@ class _MovieMenuState extends State<MovieMenu>
   }
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   void onReachBottom() {
     _currentPage++;
     widget.moviesBloc.getMoviesByType(Endpoint.popular, _currentPage);
@@ -53,7 +50,6 @@ class _MovieMenuState extends State<MovieMenu>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     listenToScrollController();
     return SingleChildScrollView(
       controller: bottomReachedScrollController,

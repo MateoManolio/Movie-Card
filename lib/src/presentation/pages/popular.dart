@@ -24,8 +24,7 @@ class Popular extends StatefulWidget {
   State<Popular> createState() => _PopularState();
 }
 
-class _PopularState extends State<Popular>
-    with AutomaticKeepAliveClientMixin, FunctionCallWhenBottomReached {
+class _PopularState extends State<Popular> with FunctionCallWhenBottomReached {
   late int _currentPage;
 
   static const String title = 'Most Popular';
@@ -51,9 +50,6 @@ class _PopularState extends State<Popular>
   }
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   void onReachBottom() {
     _currentPage++;
     widget.moviesBloc.getMoviesByType(Endpoint.popular, _currentPage);
@@ -61,7 +57,6 @@ class _PopularState extends State<Popular>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     listenToScrollController();
     return SingleChildScrollView(
       controller: bottomReachedScrollController,
