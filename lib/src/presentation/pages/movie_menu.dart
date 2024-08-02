@@ -24,7 +24,7 @@ class MovieMenu extends StatefulWidget {
 }
 
 class _MovieMenuState extends State<MovieMenu>
-    with FunctionCallWhenBottomReached {
+    with AutomaticKeepAliveClientMixin, FunctionCallWhenBottomReached {
   late int _currentPage;
 
   static const double endPadding = 130;
@@ -43,6 +43,9 @@ class _MovieMenuState extends State<MovieMenu>
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void onReachBottom() {
     _currentPage++;
     widget.moviesBloc.getMoviesByType(Endpoint.popular, _currentPage);
@@ -50,6 +53,7 @@ class _MovieMenuState extends State<MovieMenu>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     listenToScrollController();
     return SingleChildScrollView(
       controller: bottomReachedScrollController,
@@ -62,6 +66,7 @@ class _MovieMenuState extends State<MovieMenu>
               AsyncSnapshot<Event<Movie?>> snapshot,
             ) {
               switch (snapshot.data?.state) {
+                case null:
                 case Status.loading:
                   return LastSeenLoader();
                 case Status.empty:
@@ -74,7 +79,6 @@ class _MovieMenuState extends State<MovieMenu>
                     updateMovie: (Movie movie) =>
                         widget.moviesBloc.updateMovie(movie),
                   );
-                case null:
                 case Status.error:
                   return CustomError(
                     message: errorMessageLastSeen,
