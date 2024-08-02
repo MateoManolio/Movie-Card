@@ -99,17 +99,21 @@ class _CarrouselState extends State<Carrousel> {
                     arguments: MovieDetailsArguments(
                       movie: widget.movies[_currentPage],
                       setLastMovie: widget.setLastMovie,
-                      backdropTag: '',
+                      backdropTag:
+                          widget.movies[_currentPage].assetsBackdropPath,
                       posterTag: '',
                       updateMovie: widget.updateMovie,
                     ),
                   );
                 },
-                child: Card(
-                  child: CacheImage(
-                    url: widget.movies[index].assetsBackdropPath,
+                child: Hero(
+                  tag: widget.movies[_currentPage].assetsBackdropPath,
+                  child: Card(
+                    child: CacheImage(
+                      url: widget.movies[index].assetsBackdropPath,
+                    ),
+                    clipBehavior: Clip.hardEdge,
                   ),
-                  clipBehavior: Clip.hardEdge,
                 ),
               );
             },

@@ -11,4 +11,5 @@ abstract class IMyRepository {
   ]);
   Future<DataState<List<Genre>>> loadGenres();
   Future<DataState<List<Cast>>> loadCast(int? movieId);
+  Future<DataState<List<Movie>>> searchMovies(String query);
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' show Client;
 import 'package:http/src/response.dart';
+import 'package:movie_card/src/core/util/extensions.dart';
 
 import '../../../core/util/data_state.dart';
 import '../../../core/util/enums.dart';
@@ -41,18 +42,36 @@ class APIRepository implements IMyRepository {
   @override
   Future<DataState<List<Genre>>> loadGenres() async {
     try {
-      final Response response = await client.get(
+      final Response moviesResponse = await client.get(
         Uri.parse(
-          '$genresUri$apiKeyUri',
+          '$genresMoviesUri$apiKeyUri',
         ),
       );
-      if (response.statusCode == HttpStatus.ok) {
-        final List<Map<String, dynamic>> genreList =
-            List<Map<String, dynamic>>.from(
-          json.decode(response.body)['genres'],
-        );
+      final Response tvShowsResponse = await client.get(
+        Uri.parse(
+          '$genresTVShowsUri$apiKeyUri',
+        ),
+      );
+      if (moviesResponse.statusCode == HttpStatus.ok ||
+          tvShowsResponse.statusCode == HttpStatus.ok) {
+        final List<Genre> genreList = <Genre>[];
+        if (moviesResponse.statusCode == HttpStatus.ok) {
+          final List<Map<String, dynamic>> genreMoviesList =
+              List<Map<String, dynamic>>.from(
+            json.decode(moviesResponse.body)['genres'],
+          );
+          genreList.addAll(GenreModel.listOfGenres(genreMoviesList));
+        }
+        if (tvShowsResponse.statusCode == HttpStatus.ok) {
+          final List<Map<String, dynamic>> genreTVShowsList =
+              List<Map<String, dynamic>>.from(
+            json.decode(tvShowsResponse.body)['genres'],
+          );
+          genreList
+              .addButRepeatedGenres(GenreModel.listOfGenres(genreTVShowsList));
+        }
         return DataSuccess<List<Genre>>(
-          data: GenreModel.listOfGenres(genreList),
+          data: genreList,
         );
       } else {
         return DataFailure<List<Genre>>(
@@ -142,6 +161,37 @@ class APIRepository implements IMyRepository {
     } else {
       return DataFailure<List<CastModel>>(
         error: Exception(messageMissingParameters),
+      );
+    }
+  }
+
+  @override
+  Future<DataState<List<Movie>>> searchMovies(String query) async {
+    try {
+      final Response response = await client.get(
+        Uri.parse(
+          '$searchMoviesUri/multi$apiKeyUri&query=$query',
+        ),
+      );
+      if (response.statusCode == HttpStatus.ok) {
+        final Map<String, dynamic> results = json.decode(response.body);
+        final ResponseModel responseModel = ResponseModel(
+          page: results['page'],
+          totalResults: results['total_results'],
+          totalPages: results['total_pages'],
+          result: results['results'],
+        );
+        return DataSuccess<List<Movie>>(
+          data: responseModel.movies.toEntity(),
+        );
+      } else {
+        return DataFailure<List<Movie>>(
+          error: Exception(messageFetchMoviesError),
+        );
+      }
+    } catch (error) {
+      return DataFailure<List<MovieModel>>(
+        error: Exception(error),
       );
     }
   }

@@ -15,7 +15,11 @@ const String imageUri = 'https://image.tmdb.org/t/p/w500';
 
 const String moviesDetailsUri = 'https://api.themoviedb.org/3/movie';
 
-const String genresUri = 'https://api.themoviedb.org/3/genre/movie/list';
+const String genresMoviesUri = 'https://api.themoviedb.org/3/genre/movie/list';
+
+const String genresTVShowsUri = 'https://api.themoviedb.org/3/genre/movie/list';
+
+const String searchMoviesUri = 'https://api.themoviedb.org/3/search';
 
 // Preferences
 const String lastMoviePreference = 'movieId';

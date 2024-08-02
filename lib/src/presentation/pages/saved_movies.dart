@@ -147,10 +147,4 @@ class _SavedMoviesState extends State<SavedMovies> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    widget.bloc.dispose();
-    super.dispose();
-  }
 }

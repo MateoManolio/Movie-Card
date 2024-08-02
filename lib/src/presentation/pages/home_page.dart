@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:movie_card/src/presentation/pages/saved_movies.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/util/ui_consts.dart';
 import '../../domain/entity/movie.dart';
 import '../bloc/movies_bloc.dart';
 import '../bloc/saved_bloc.dart';
+import '../bloc/search_movies_bloc.dart';
 import '../widgets/drawer/drawer.dart';
 import '../widgets/menu/exit_alert.dart';
 import '../widgets/menu/header.dart';
 import '../widgets/menu/menu_custom_navbar.dart';
 import 'movie_menu.dart';
 import 'popular.dart';
+import 'saved_movies.dart';
+import 'search_movies.dart';
 
 class HomePage extends StatefulWidget {
   final MoviesBloc bloc;
@@ -26,7 +28,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
-  static const int initialIndex = 0;
+  static const int initialIndex = 1;
   late int selectedIndex;
 
   late List<Widget> _pages;
@@ -48,14 +50,20 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
     super.initState();
 
     _pages = <Widget>[
-      MovieMenu(
-        moviesBloc: widget.bloc,
-      ),
       Popular(
         moviesBloc: widget.bloc,
       ),
-      //TODO: Implement the search page
-      Placeholder(),
+      MovieMenu(
+        moviesBloc: widget.bloc,
+      ),
+      SearchMovies(
+        searchMoviesBloc: Provider.of<SearchMoviesBloc>(
+          context,
+          listen: false,
+        ),
+        setLastMovie: (Movie movie) => widget.bloc.setLastMovie(movie),
+        updateMovie: (Movie movie) => widget.bloc.updateMovie(movie),
+      ),
       SavedMovies(
         bloc: Provider.of<SavedMoviesBloc>(
           context,
@@ -156,6 +164,12 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
           floatingActionButton: MenuCustomNavigationBar(
             currentIndex: selectedIndex,
             onIconTap: (int newPage) {
+              setState(() {
+                selectedIndex = newPage;
+                goToPage(newPage);
+              });
+            },
+            onSearchTap: (int newPage) {
               setState(() {
                 selectedIndex = newPage;
                 goToPage(newPage);

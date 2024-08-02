@@ -6,8 +6,10 @@ import '../../../../domain/entity/movie.dart';
 
 @dao
 abstract class MovieDao {
-  @Query('SELECT * FROM Movie')
-  Future<List<Movie>> findAllMovies();
+  @Query(
+    'SELECT * FROM Movie m where EXISTS( SELECT 1 FROM MovieCategory c WHERE m.id = c.movieId AND c.page = :page)',
+  )
+  Future<List<Movie>> findAllMoviesPage(int page);
 
   @Query('SELECT * FROM Movie WHERE id = :id')
   Future<Movie?> findMovieById(int id);
@@ -22,6 +24,9 @@ abstract class MovieDao {
 
   @Query('SELECT * FROM Movie WHERE liked = true')
   Future<List<Movie>> findLikedMovies();
+
+  @Query('SELECT * FROM Movie WHERE title LIKE :title')
+  Future<List<Movie>> searchMovies(String title);
 
   @insert
   Future<void> insertMovie(Movie movie);

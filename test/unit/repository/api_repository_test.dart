@@ -8,7 +8,6 @@ import 'package:movie_card/src/data/datasource/remote/api_repository.dart';
 import 'package:movie_card/src/domain/entity/genre.dart';
 import 'package:movie_card/src/domain/entity/movie.dart';
 
-
 class MockClient extends Mock implements http.Client {}
 
 void main() {
@@ -31,7 +30,7 @@ void main() {
           when(
             () => mockClient.get(
               Uri.parse(
-                genresUri + APIRepository.apiKeyUri,
+                genresMoviesUri + APIRepository.apiKeyUri,
               ),
             ),
           ).thenAnswer(
@@ -55,7 +54,7 @@ void main() {
           when(
             () => mockClient.get(
               Uri.parse(
-                genresUri + APIRepository.apiKeyUri,
+                genresMoviesUri + APIRepository.apiKeyUri,
               ),
             ),
           ).thenAnswer(
