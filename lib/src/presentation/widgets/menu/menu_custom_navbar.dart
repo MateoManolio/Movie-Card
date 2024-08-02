@@ -6,12 +6,10 @@ class MenuCustomNavigationBar extends StatelessWidget {
   MenuCustomNavigationBar({
     required this.currentIndex,
     required this.onIconTap,
-    required this.onSearchTap,
     super.key,
   });
 
   final Function(int) onIconTap;
-  final Function(int) onSearchTap;
   final int currentIndex;
 
   @override
@@ -51,7 +49,7 @@ class MenuCustomNavigationBar extends StatelessWidget {
             icon: Icons.search_rounded,
             pageIndex: searchPage,
             currentIndex: currentIndex,
-            onIconTap: onSearchTap,
+            onIconTap: onIconTap,
           ),
           NavbarIcon(
             icon: Icons.bookmark_added,

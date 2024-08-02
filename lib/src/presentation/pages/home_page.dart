@@ -169,12 +169,6 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
                 goToPage(newPage);
               });
             },
-            onSearchTap: (int newPage) {
-              setState(() {
-                selectedIndex = newPage;
-                goToPage(newPage);
-              });
-            },
           ),
         ),
         animationController: animationController,
