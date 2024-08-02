@@ -5,6 +5,7 @@ import 'package:http/http.dart' show Client;
 import 'package:http/src/response.dart';
 import 'package:movie_card/src/core/util/extensions.dart';
 
+import '../../../config/secrets/env.dart';
 import '../../../core/util/data_state.dart';
 import '../../../core/util/enums.dart';
 import '../../../core/util/strings.dart';
@@ -22,8 +23,7 @@ class APIRepository implements IMyRepository {
   static const String messageLoadGenresError = 'Failed to load the genres';
   static const String messageLoadCastError = 'Failed to load the cast';
   static const String messageMissingParameters = 'The parameters are missing';
-  static const String apiKey = '42436bf062f671bce7b4344e0962f60c';
-  static const String apiKeyUri = '?api_key=$apiKey';
+  late final String apiKeyUri = '?api_key=${Env.apiKey}';
 
   late final String addingUri;
   static const String latest = '/latest';

@@ -51,6 +51,7 @@ class _MovieDetailsState extends State<MovieDetails> {
     return Scaffold(
       backgroundColor: colors.onPrimaryContainer,
       body: SingleChildScrollView(
+        physics: ClampingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
