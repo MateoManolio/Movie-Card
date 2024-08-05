@@ -19,7 +19,10 @@ class MockMoviesBlocSuccess extends Mock implements MoviesBloc {
       StreamController<Event<List<Movie>>>.broadcast();
 
   @override
-  Future<void> getMoviesByType(Endpoint endpoint) async {
+  Future<void> getMoviesByType(
+    Endpoint endpoint,
+    int? page,
+  ) async {
     switch (endpoint) {
       case Endpoint.popular:
         popularStreamController.add(
@@ -53,7 +56,10 @@ class MockMoviesBlocFailure extends Mock implements MoviesBloc {
       StreamController<Event<List<Movie>>>.broadcast();
 
   @override
-  Future<void> getMoviesByType(Endpoint endpoint) async {
+  Future<void> getMoviesByType(
+    Endpoint endpoint,
+    int? page,
+  ) async {
     switch (endpoint) {
       case Endpoint.popular:
         popularStreamController.add(

@@ -41,6 +41,7 @@ class MovieDetails extends StatefulWidget {
 class _MovieDetailsState extends State<MovieDetails> {
   @override
   void initState() {
+    super.initState();
     widget.setLastMovie(widget.movie);
     widget.movieBloc.loadCast(widget.movie.id);
   }
@@ -50,6 +51,7 @@ class _MovieDetailsState extends State<MovieDetails> {
     return Scaffold(
       backgroundColor: colors.onPrimaryContainer,
       body: SingleChildScrollView(
+        physics: ClampingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -90,8 +92,15 @@ class _MovieDetailsState extends State<MovieDetails> {
         ),
       ),
       floatingActionButton: CustomNavigationBar(
-        movie: widget.movie, updateMovie: widget.updateMovie,
+        movie: widget.movie,
+        updateMovie: widget.updateMovie,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    widget.movieBloc.dispose();
+    super.dispose();
   }
 }

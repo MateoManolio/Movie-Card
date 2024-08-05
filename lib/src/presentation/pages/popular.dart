@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:movie_card/src/presentation/widgets/shared/cache_image.dart';
-import 'package:movie_card/src/presentation/widgets/shared/custom_card.dart';
 
 import '../../core/util/enums.dart';
+import '../../core/util/function_called_when_bottom_reached.dart';
 import '../../core/util/ui_consts.dart';
 import '../../domain/entity/event.dart';
 import '../../domain/entity/movie.dart';
@@ -25,7 +24,9 @@ class Popular extends StatefulWidget {
   State<Popular> createState() => _PopularState();
 }
 
-class _PopularState extends State<Popular> {
+class _PopularState extends State<Popular> with FunctionCallWhenBottomReached {
+  late int _currentPage;
+
   static const String title = 'Most Popular';
   static const String errorMessagePopular = 'Error to bring the Popular movies';
   static const String errorMessageNowPlaying =
@@ -37,21 +38,28 @@ class _PopularState extends State<Popular> {
   static const int gridViewLoaderListSize = 4;
 
   static const double endHeight = 150;
-  static const double customCardPadding = 2;
-  static const double cardRadius = 10;
 
   get selectedIndex => 0;
 
   @override
   void initState() {
-    widget.moviesBloc.getMoviesByType(Endpoint.popular);
-    widget.moviesBloc.getMoviesByType(Endpoint.nowPlaying);
+    _currentPage = 1;
+    widget.moviesBloc.getMoviesByType(Endpoint.popular, _currentPage);
+    widget.moviesBloc.getMoviesByType(Endpoint.nowPlaying, 1);
     super.initState();
   }
 
   @override
+  void onReachBottom() {
+    _currentPage++;
+    widget.moviesBloc.getMoviesByType(Endpoint.popular, _currentPage);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    listenToScrollController();
     return SingleChildScrollView(
+      controller: bottomReachedScrollController,
       child: Column(
         children: <Widget>[
           StreamBuilder<Event<List<Movie>>>(
@@ -119,21 +127,13 @@ class _PopularState extends State<Popular> {
                         BuildContext context,
                         int index,
                       ) {
-                        return CustomCard(
-                          padding: customCardPadding,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(cardRadius),
-                            child: CacheImage(
-                              url: snapshot.data!.data![index].assetsPosterPath,
-                            ),
-                          ),
-                        );
-                        //TODO: Remove this if it works
                         return GridCard(
                           movie: snapshot.data!.data![index],
                           setLastMovie: widget.moviesBloc.setLastMovie,
                           updateMovie: (Movie movie) =>
                               widget.moviesBloc.updateMovie(movie),
+                          iconRadius: 20,
+                          spacePosterButtons: 15,
                         );
                       },
                     ),

@@ -1,4 +1,3 @@
-import 'cast_model.dart';
 import '../../domain/entity/movie.dart';
 
 class MovieModel extends Movie {
@@ -14,14 +13,21 @@ class MovieModel extends Movie {
   });
 
   factory MovieModel.fromJson(Map<String, dynamic> json) {
-
     const int percent = 10;
+    final String name = json['title'].toString() == "null"
+        ? json['name'].toString()
+        : json['title'].toString();
+
+    final String releaseDate = json['release_date'].toString() == "null"
+        ? json['first_air_date'].toString()
+        : json['release_date'].toString();
+
     return MovieModel(
       id: json['id'].toInt(),
-      title: json['title'].toString(),
+      title: name,
       posterName: json['poster_path'].toString(),
       backdropName: json['backdrop_path'].toString(),
-      releaseDate: json['release_date'].toString(),
+      releaseDate: releaseDate,
       score: (json['vote_average'].toDouble() / percent),
       genres: List<int>.from(json['genre_ids']),
       overview: json['overview'].toString(),
@@ -44,7 +50,7 @@ class MovieModel extends Movie {
         releaseDate: "2023-04-05",
         overview:
             "While working underground to fix a water main, Brooklyn plumbers—and brothers—Mario and Luigi are transported down a mysterious pipe and wander into a magical new world. But when the brothers are separated, Mario embarks on an epic quest to find Luigi.",
-        genres: [16, 10751, 12, 14, 35],
+        genres: <int>[16, 10751, 12, 14, 35],
         score: 0.78,
       );
 }

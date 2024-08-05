@@ -16,8 +16,14 @@ class ResponseModel {
   List<MovieModel> get movies {
     List<MovieModel> results = <MovieModel>[];
     for (int i = 0; i < result.length; i++) {
-      final MovieModel movie = MovieModel.fromJson(result[i]);
-      results.add(movie);
+      try {
+        if (result[i]["title"] != null || result[i]["name"] != null) {
+          final MovieModel movie = MovieModel.fromJson(result[i]);
+          results.add(movie);
+        }
+      } catch (_) {
+        continue;
+      }
     }
     return results;
   }

@@ -3,19 +3,16 @@ import 'package:flutter/material.dart';
 import '../../../core/util/ui_consts.dart';
 import 'side_menu_elements.dart';
 
-class SideMenu extends StatefulWidget {
+class SideMenu extends StatelessWidget {
   final Function(int) optionSelected;
+  final int selectedPage;
 
   const SideMenu({
     required this.optionSelected,
+    required this.selectedPage,
     super.key,
   });
 
-  @override
-  State<SideMenu> createState() => _SideMenuState();
-}
-
-class _SideMenuState extends State<SideMenu> {
   static const double width = 0.75;
 
   @override
@@ -25,7 +22,8 @@ class _SideMenuState extends State<SideMenu> {
       body: Center(
         child: SideMenuElements(
           width: MediaQuery.of(context).size.width * width,
-          optionSelected: widget.optionSelected,
+          optionSelected: optionSelected,
+          selectedPage: selectedPage,
         ),
       ),
     );

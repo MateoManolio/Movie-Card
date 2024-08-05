@@ -9,7 +9,7 @@ class Header extends StatefulWidget {
   });
 
   final Function() openDrawer;
-  bool isOpen;
+  final bool isOpen;
   static const String title = "TMDB";
   static const String logo = 'assets/logo/logoTMDB.png';
   static const double padding = 25.0;

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:movie_card/src/presentation/pages/saved_movies.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/util/ui_consts.dart';
 import '../../domain/entity/movie.dart';
 import '../bloc/movies_bloc.dart';
 import '../bloc/saved_bloc.dart';
+import '../bloc/search_movies_bloc.dart';
 import '../widgets/drawer/drawer.dart';
-import '../widgets/drawer/side_menu_elements.dart';
 import '../widgets/menu/exit_alert.dart';
 import '../widgets/menu/header.dart';
 import '../widgets/menu/menu_custom_navbar.dart';
 import 'movie_menu.dart';
 import 'popular.dart';
+import 'saved_movies.dart';
+import 'search_movies.dart';
 
 class HomePage extends StatefulWidget {
   final MoviesBloc bloc;
@@ -27,8 +28,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
-  static const int initialIndex = 0;
-  int selectedIndex = initialIndex;
+  static const int initialIndex = 1;
+  late int selectedIndex;
 
   late List<Widget> _pages;
   late PageController _pageController;
@@ -42,14 +43,26 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
+    selectedIndex = initialIndex;
+
     widget.bloc.initialize();
+
     super.initState();
+
     _pages = <Widget>[
+      Popular(
+        moviesBloc: widget.bloc,
+      ),
       MovieMenu(
         moviesBloc: widget.bloc,
       ),
-      Popular(
-        moviesBloc: widget.bloc,
+      SearchMovies(
+        searchMoviesBloc: Provider.of<SearchMoviesBloc>(
+          context,
+          listen: false,
+        ),
+        setLastMovie: (Movie movie) => widget.bloc.setLastMovie(movie),
+        updateMovie: (Movie movie) => widget.bloc.updateMovie(movie),
       ),
       SavedMovies(
         bloc: Provider.of<SavedMoviesBloc>(
@@ -76,6 +89,7 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
     super.dispose();
     _pageController.dispose();
     animationController.dispose();
+    widget.bloc.dispose();
   }
 
   Future<bool> _checkExit() async {
@@ -97,9 +111,6 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
   }
 
   void goToPage(int newIndex) {
-    if (newIndex == homePage) {
-      SideMenuElements.setSelectedPage(homePage);
-    }
     _pageController.animateToPage(
       newIndex,
       duration: const Duration(milliseconds: animationPageTransition),
@@ -116,8 +127,9 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => _checkExit(),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) async => _checkExit(),
       child: HasDrawer(
         switchToPage: (int newPage) {
           setState(() {
@@ -126,6 +138,7 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
             goToPage(newPage);
           });
         },
+        selectedPage: selectedIndex,
         childPage: Scaffold(
           appBar: AppBar(
             flexibleSpace: Header(
@@ -151,8 +164,10 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
           floatingActionButton: MenuCustomNavigationBar(
             currentIndex: selectedIndex,
             onIconTap: (int newPage) {
-              selectedIndex = selectedIndex;
-              goToPage(newPage);
+              setState(() {
+                selectedIndex = newPage;
+                goToPage(newPage);
+              });
             },
           ),
         ),

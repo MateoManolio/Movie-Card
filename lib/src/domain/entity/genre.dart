@@ -11,4 +11,8 @@ class Genre {
     required this.name,
   });
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Genre && id == other.id && name == other.name;
 }

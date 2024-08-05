@@ -32,7 +32,7 @@ class SavedMovies extends StatefulWidget {
 }
 
 class _SavedMoviesState extends State<SavedMovies> {
-  Option option = Option.saved;
+  Option? option;
   static const int gridViewLoaderListSize = 4;
   static const double gridPadding = 12;
   static const String errorMessageSaved = 'Error to bring the movies';
@@ -43,11 +43,16 @@ class _SavedMoviesState extends State<SavedMovies> {
     _initialization();
   }
 
-  Future<void> _initialization([Option? option]) async {
+  Future<void> _initialization() async {
     if (option == null) {
-      option = await widget.bloc.option;
+      final Option initialOption = await widget.bloc.option;
+
+      setState(() {
+        option = initialOption;
+      });
     }
-    switch (option) {
+
+    switch (option!) {
       case Option.saved:
         await widget.bloc.getSavedMovies();
       case Option.liked:
@@ -58,6 +63,10 @@ class _SavedMoviesState extends State<SavedMovies> {
 
   @override
   Widget build(BuildContext context) {
+    if (option == null) {
+      return Center(child: CircularProgressIndicator());
+    }
+
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -66,11 +75,11 @@ class _SavedMoviesState extends State<SavedMovies> {
               height: SavedMovies.initSeparation,
             ),
             SwitchButton(
-              option: option,
+              option: option!,
               newOptionSelected: (Option newOption) {
                 setState(() {
                   option = newOption;
-                  _initialization(newOption);
+                  _initialization();
                   widget.bloc.setOption(newOption);
                 });
               },
@@ -87,6 +96,7 @@ class _SavedMoviesState extends State<SavedMovies> {
                 switch (snapshot.data?.state) {
                   case null:
                   case Status.loading:
+                    _initialization();
                     return GridViewLoader(
                       gridCrossAxisCount: SavedMovies.gridCrossAxisCount,
                       length: gridViewLoaderListSize,
@@ -94,7 +104,7 @@ class _SavedMoviesState extends State<SavedMovies> {
                   case Status.empty:
                     return Padding(
                       padding: const EdgeInsets.only(top: 25),
-                      child: EmptyText(option: option),
+                      child: EmptyText(option: option!),
                     );
                   case Status.success:
                     return Padding(

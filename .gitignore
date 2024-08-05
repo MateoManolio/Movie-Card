@@ -1,3 +1,6 @@
+# Secrets 
+lock.env
+
 # Miscellaneous
 *.class
 *.log

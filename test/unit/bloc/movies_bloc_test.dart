@@ -10,8 +10,7 @@ import 'package:movie_card/src/domain/usecase/movies_by_type_usecase.dart';
 import 'package:movie_card/src/domain/usecase/update_movie_usecase.dart';
 import 'package:movie_card/src/presentation/bloc/movies_bloc.dart';
 
-class MockGetMoviesUseCase extends Mock
-    implements MoviesByTypeUseCase {
+class MockGetMoviesUseCase extends Mock implements MoviesByTypeUseCase {
   @override
   Future<DataState<List<Movie>>> call([dynamic params]) async {
     return DataSuccess<List<Movie>>(data: movies);
@@ -26,8 +25,7 @@ class MockFetchLastSeenMovieUseCase extends Mock
   }
 }
 
-class MockUpdateMovieUseCase extends Mock
-    implements UpdateMovieUseCase {
+class MockUpdateMovieUseCase extends Mock implements UpdateMovieUseCase {
   @override
   Future<Movie> call([Movie? params]) {
     return Future<Movie>.value(movie);
@@ -55,11 +53,16 @@ void main() {
       late MoviesBloc moviesBloc;
       setUp(
         () {
-          final MockGetMoviesUseCase mockPopularMoviesUseCase = MockGetMoviesUseCase();
-          final MockFetchLastSeenMovieUseCase fetchFirstLastMovie = MockFetchLastSeenMovieUseCase();
-          final MockUpdateMovieUseCase updateMovieUseCase = MockUpdateMovieUseCase();
+          final MockGetMoviesUseCase mockPopularMoviesUseCase =
+              MockGetMoviesUseCase();
+          final MockFetchLastSeenMovieUseCase fetchFirstLastMovie =
+              MockFetchLastSeenMovieUseCase();
+          final MockUpdateMovieUseCase updateMovieUseCase =
+              MockUpdateMovieUseCase();
           moviesBloc = MoviesBloc(
-            getMoviesUseCase: mockPopularMoviesUseCase, fetchFirstMovie: fetchFirstLastMovie, updateMovieUseCase: updateMovieUseCase,
+            getMoviesUseCase: mockPopularMoviesUseCase,
+            fetchFirstMovie: fetchFirstLastMovie,
+            updateMovieUseCase: updateMovieUseCase,
           );
         },
       );
@@ -78,7 +81,7 @@ void main() {
             emitsInOrder([Event<List<Movie>>.success(movies)]),
           );
 
-          await moviesBloc.getMoviesByType(Endpoint.popular);
+          await moviesBloc.getMoviesByType(Endpoint.popular, 0);
         },
       );
     },

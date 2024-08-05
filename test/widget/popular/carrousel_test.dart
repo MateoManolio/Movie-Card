@@ -17,7 +17,10 @@ class MockMoviesBlocSuccess extends Mock implements MoviesBloc {
       StreamController<Event<List<Movie>>>.broadcast();
 
   @override
-  Future<void> getMoviesByType(Endpoint endpoint) async {
+  Future<void> getMoviesByType(
+    Endpoint endpoint,
+    int? page,
+  ) async {
     switch (endpoint) {
       case Endpoint.nowPlaying:
         nowPlayingStreamController.add(
@@ -44,7 +47,10 @@ class MockMoviesBlocFailure extends Mock implements MoviesBloc {
       StreamController<Event<List<Movie>>>.broadcast();
 
   @override
-  Future<void> getMoviesByType(Endpoint endpoint) async {}
+  Future<void> getMoviesByType(
+    Endpoint endpoint,
+    int? page,
+  ) async {}
 
   @override
   Stream<Event<List<Movie>>> get nowPlayingStream =>
@@ -55,8 +61,6 @@ void main() {
   testWidgets(
     'Carrousel renders without error',
     (WidgetTester tester) async {
-      final MockMoviesBlocSuccess mockMoviesBloc = MockMoviesBlocSuccess();
-
       await tester.pumpWidget(
         MaterialApp(
           home: Carrousel(
@@ -75,8 +79,6 @@ void main() {
   testWidgets(
     'Carrousel increments page with timer',
     (WidgetTester tester) async {
-      final MockMoviesBlocSuccess mockMoviesBloc = MockMoviesBlocSuccess();
-
       final Carrousel mockCarrousel = Carrousel(
         movies: List<Movie>.generate(10, (int index) => MovieModel.mockMovie()),
         setLastMovie: (Movie Movie) {},

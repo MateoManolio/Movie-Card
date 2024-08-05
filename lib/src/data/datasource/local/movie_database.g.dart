@@ -95,7 +95,7 @@ class _$MovieDatabase extends MovieDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `MovieCast` (`id` INTEGER NOT NULL, `profilePath` TEXT NOT NULL, `movieId` INTEGER NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `MovieCategory` (`category` INTEGER NOT NULL, `movieId` INTEGER NOT NULL, PRIMARY KEY (`category`, `movieId`))');
+            'CREATE TABLE IF NOT EXISTS `MovieCategory` (`category` INTEGER NOT NULL, `movieId` INTEGER NOT NULL, `page` INTEGER NOT NULL, PRIMARY KEY (`category`, `movieId`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `MovieGenre` (`genreId` INTEGER NOT NULL, `movieId` INTEGER NOT NULL, PRIMARY KEY (`genreId`, `movieId`))');
 
@@ -200,7 +200,8 @@ class _$MovieDao extends MovieDao {
             'MovieCategory',
             (MovieCategory item) => <String, Object?>{
                   'category': item.category.index,
-                  'movieId': item.movieId
+                  'movieId': item.movieId,
+                  'page': item.page
                 }),
         _movieUpdateAdapter = UpdateAdapter(
             database,
@@ -232,19 +233,11 @@ class _$MovieDao extends MovieDao {
   final UpdateAdapter<Movie> _movieUpdateAdapter;
 
   @override
-  Future<List<Movie>> findAllMovies() async {
-    return _queryAdapter.queryList('SELECT * FROM Movie',
-        mapper: (Map<String, Object?> row) => Movie(
-            id: row['id'] as int,
-            title: row['title'] as String,
-            posterName: row['posterName'] as String,
-            backdropName: row['backdropName'] as String,
-            releaseDate: row['releaseDate'] as String,
-            score: row['score'] as double,
-            genres: _genresListConverter.decode(row['genres'] as String),
-            overview: row['overview'] as String,
-            saved: (row['saved'] as int) != 0,
-            liked: (row['liked'] as int) != 0));
+  Future<List<Movie>> findAllMoviesPage(int page) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Movie m where EXISTS( SELECT 1 FROM MovieCategory c WHERE m.id = c.movieId AND c.page = ?1)',
+        mapper: (Map<String, Object?> row) => Movie(id: row['id'] as int, title: row['title'] as String, posterName: row['posterName'] as String, backdropName: row['backdropName'] as String, releaseDate: row['releaseDate'] as String, score: row['score'] as double, genres: _genresListConverter.decode(row['genres'] as String), overview: row['overview'] as String, saved: (row['saved'] as int) != 0, liked: (row['liked'] as int) != 0),
+        arguments: [page]);
   }
 
   @override
@@ -265,11 +258,14 @@ class _$MovieDao extends MovieDao {
   }
 
   @override
-  Future<List<Movie>> findMovieByType(Endpoint type) async {
+  Future<List<Movie>> findMovieByType(
+    Endpoint type,
+    int page,
+  ) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM Movie m WHERE EXISTS( SELECT 1 FROM MovieCategory c WHERE m.id = c.movieId AND c.category = ?1 )',
+        'SELECT * FROM Movie m WHERE EXISTS( SELECT 1 FROM MovieCategory c WHERE m.id = c.movieId AND c.category = ?1 AND c.page = ?2)',
         mapper: (Map<String, Object?> row) => Movie(id: row['id'] as int, title: row['title'] as String, posterName: row['posterName'] as String, backdropName: row['backdropName'] as String, releaseDate: row['releaseDate'] as String, score: row['score'] as double, genres: _genresListConverter.decode(row['genres'] as String), overview: row['overview'] as String, saved: (row['saved'] as int) != 0, liked: (row['liked'] as int) != 0),
-        arguments: [type.index]);
+        arguments: [type.index, page]);
   }
 
   @override
@@ -302,6 +298,23 @@ class _$MovieDao extends MovieDao {
             overview: row['overview'] as String,
             saved: (row['saved'] as int) != 0,
             liked: (row['liked'] as int) != 0));
+  }
+
+  @override
+  Future<List<Movie>> searchMovies(String title) async {
+    return _queryAdapter.queryList('SELECT * FROM Movie WHERE title LIKE ?1',
+        mapper: (Map<String, Object?> row) => Movie(
+            id: row['id'] as int,
+            title: row['title'] as String,
+            posterName: row['posterName'] as String,
+            backdropName: row['backdropName'] as String,
+            releaseDate: row['releaseDate'] as String,
+            score: row['score'] as double,
+            genres: _genresListConverter.decode(row['genres'] as String),
+            overview: row['overview'] as String,
+            saved: (row['saved'] as int) != 0,
+            liked: (row['liked'] as int) != 0),
+        arguments: [title]);
   }
 
   @override

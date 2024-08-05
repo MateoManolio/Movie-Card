@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:movie_card/src/domain/usecase/fetch_all_movies_usecase.dart';
+import 'package:movie_card/src/domain/usecase/search_movies_usecase.dart';
+import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
 
+import '../../presentation/bloc/search_movies_bloc.dart';
 import '../../data/datasource/local/movie_database.dart';
 import '../../data/datasource/remote/api_repository.dart';
 import '../../data/repository/cast_repository.dart';
@@ -20,6 +24,7 @@ import '../../presentation/navigation/movie_details_args.dart';
 import '../../presentation/pages/home_page.dart';
 import '../../presentation/pages/movie_details.dart';
 import '../../presentation/pages/saved_movies.dart';
+import '../../presentation/pages/search_movies.dart';
 
 abstract class AppRoutes {
   static Map<String, WidgetBuilder> get routes {
@@ -56,7 +61,7 @@ abstract class AppRoutes {
         );
       },
       Routes.homeRouteName: (BuildContext context) => MultiProvider(
-            providers: [
+            providers: <SingleChildWidget>[
               Provider<MoviesBloc>(
                 create: (BuildContext builderContext) => MoviesBloc(
                   getMoviesUseCase: MoviesByTypeUseCase(
@@ -110,6 +115,28 @@ abstract class AppRoutes {
                   ),
                 ),
               ),
+              Provider<SearchMoviesBloc>(
+                create: (BuildContext context) => SearchMoviesBloc(
+                  searchMoviesUseCase: SearchMoviesUseCase(
+                    repository: MovieRepository(
+                      repository: APIRepository(client: Client()),
+                      database: Provider.of<MovieDatabase>(
+                        context,
+                        listen: false,
+                      ),
+                    ),
+                  ),
+                  fetchAllMoviesMoviesUseCase: FetchAllMoviesUseCase(
+                    repository: MovieRepository(
+                      repository: APIRepository(client: Client()),
+                      database: Provider.of<MovieDatabase>(
+                        context,
+                        listen: false,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
             builder: (BuildContext builderContext, _) => HomePage(
               bloc: Provider.of<MoviesBloc>(
@@ -152,6 +179,36 @@ abstract class AppRoutes {
           },
         );
       },
+      Routes.searchMovies: (BuildContext context) {
+        final searchBloc = SearchMoviesBloc(
+          searchMoviesUseCase: SearchMoviesUseCase(
+            repository: MovieRepository(
+              repository: APIRepository(client: Client()),
+              database: Provider.of<MovieDatabase>(
+                context,
+                listen: false,
+              ),
+            ),
+          ),
+          fetchAllMoviesMoviesUseCase: FetchAllMoviesUseCase(
+            repository: MovieRepository(
+              repository: APIRepository(client: Client()),
+              database: Provider.of<MovieDatabase>(
+                context,
+                listen: false,
+              ),
+            ),
+          ),
+        );
+        return Provider<SearchMoviesBloc>(
+          create: (BuildContext context) => searchBloc,
+          child: SearchMovies(
+            searchMoviesBloc: searchBloc,
+            setLastMovie: (Movie Movie) {},
+            updateMovie: (Movie Movie) {},
+          ),
+        );
+      },
     };
   }
 }
@@ -164,4 +221,5 @@ abstract class Routes {
   static const String mostPopularRouteName = '/most_popular';
   static const String upcomingRouteName = '/upcoming';
   static const String savedMovies = '/saved';
+  static const String searchMovies = '/search';
 }
